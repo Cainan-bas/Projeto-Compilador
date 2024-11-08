@@ -359,6 +359,7 @@ TOKEN AnaLex(FILE *fd) {
       break;
     case 50:
       t.cat = ERRO;
+      ungetc(c, fd);
       return t;
       break;
     }
@@ -546,6 +547,7 @@ int main() {
       break;
     case ERRO:
       printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");
+      printf("\nLINHA %d: ", ++contLinha);
       break;
     case FIM_EXPR:
       printf("\nLINHA %d: ", ++contLinha);
