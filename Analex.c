@@ -547,6 +547,7 @@ int main() {
       break;
     case ERRO:
       printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");
+      //tk.codigo = FIM_EXPR;
       printf("\nLINHA %d: ", ++contLinha);
       break;
     case FIM_EXPR:
