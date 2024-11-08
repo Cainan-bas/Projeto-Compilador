@@ -7,18 +7,11 @@
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
-#define NUM_PALAVRAS_RESERVADAS 28
 
-const char *palavras_reservadas[NUM_PALAVRAS_RESERVADAS] = {
-    "const",  "pr",     "init",    "end",     "char",   "int",     "real",
-    "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
-    "dt",     "by",     "if",      "endv",    "else",   "elif",    "endi",
-    "getout", "getint", "getreal", "getchar", "putint", "putreal", "putchar"};
-
-int comparaPalavraReservada(const char *palavra) {
+int comparaPalavraReservada(char *palavra) {
   for (int i = 0; i < NUM_PALAVRAS_RESERVADAS; i++) {
     if (strcmp(palavra, palavras_reservadas[i]) == 0) {
-      return 1;
+      return i+1;
     }
   }
   return 0;
@@ -143,10 +136,11 @@ TOKEN AnaLex(FILE *fd) {
         ungetc(c, fd);
         if (comparaPalavraReservada(lexema)) {
           t.cat = PR;
+          t.codigo = comparaPalavraReservada(lexema);
         } else {
           t.cat = ID;
+          strcpy(t.lexema, lexema);
         }
-        strcpy(t.lexema, lexema);
         return t;
       }
       break;
@@ -385,7 +379,92 @@ int main() {
       printf("<ID, %s> ", tk.lexema);
       break;
     case PR:
-      printf("<PR, %s> ", tk.lexema);
+      switch (tk.codigo) {
+      case CONST:
+          printf("<PR, CONST> ");
+          break;
+      case Pr:
+          printf("<PR, PR> ");
+          break;
+      case INIT:
+          printf("<PR, INIT> ");
+          break;
+      case END:
+          printf("<PR, END> ");
+          break;
+      case CHAR:
+          printf("<PR, CHAR> ");
+          break;
+      case INT:
+          printf("<PR, INT> ");
+          break;
+      case REAL:
+          printf("<PR, REAL> ");
+          break;
+      case BOOL:
+          printf("<PR, BOOL> ");
+          break;
+      case DO:
+          printf("<PR, DO> ");
+          break;
+      case WHILE:
+          printf("<PR, WHILE> ");
+          break;
+      case ENDW:
+          printf("<PR, ENDW> ");
+          break;
+      case VAR:
+          printf("<PR, VAR> ");
+          break;
+      case FROM:
+          printf("<PR, FROM> ");
+          break;
+      case TO:
+          printf("<PR, TO> ");
+          break;
+      case DT:
+          printf("<PR, DT> ");
+          break;
+      case BY:
+          printf("<PR, BY> ");
+          break;
+      case IF:
+          printf("<PR, IF> ");
+          break;
+      case ENDV:
+          printf("<PR, ENDV> ");
+          break;
+      case ELSE:
+          printf("<PR, ELSE> ");
+          break;
+      case ELIF:
+          printf("<PR, ELIF> ");
+          break;
+      case ENDI:
+          printf("<PR, ENDI> ");
+          break;
+      case GETOUT:
+          printf("<PR, GETOUT> ");
+          break;
+      case GETINT:
+          printf("<PR, GETINT> ");
+          break;
+      case GETREAL:
+          printf("<PR, GETREAL> ");
+          break;
+      case GETCHAR:
+          printf("<PR, GETCHAR> ");
+          break;
+      case PUTINT:
+          printf("<PR, PUTINT> ");
+          break;
+      case PUTREAL:
+          printf("<PR, PUTREAL> ");
+          break;
+      case PUTCHAR:
+          printf("<PR, PUTCHAR> ");
+          break;
+      }
       break;
     case SN:
       switch (tk.codigo) {

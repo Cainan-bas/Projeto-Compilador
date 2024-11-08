@@ -2,6 +2,7 @@
 #define ANALEX
 
 #define TAM_MAX_LEXEMA 31
+#define NUM_PALAVRAS_RESERVADAS 28
 
 enum TOKEN_CAT {
   ID = 1,
@@ -38,6 +39,43 @@ enum SINAISP {
   COND_ALTERNATIVA,
   COND_NEGACAO
 };
+
+enum PalavrasReservadas {
+  CONST = 1,
+  Pr,
+  INIT,
+  END,
+  CHAR,
+  INT,
+  REAL,
+  BOOL,
+  DO,
+  WHILE,
+  ENDW,
+  VAR,
+  FROM,
+  TO,
+  DT,
+  BY,
+  IF,
+  ENDV,
+  ELSE,
+  ELIF,
+  ENDI,
+  GETOUT,
+  GETINT,
+  GETREAL,
+  GETCHAR,
+  PUTINT,
+  PUTREAL,
+  PUTCHAR
+};
+
+char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
+    "const",  "pr",     "init",    "end",     "char",   "int",     "real",
+    "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
+    "dt",     "by",     "if",      "endv",    "else",   "elif",    "endi",
+    "getout", "getint", "getreal", "getchar", "putint", "putreal", "putchar"};
 
 typedef struct {
   enum TOKEN_CAT cat;
