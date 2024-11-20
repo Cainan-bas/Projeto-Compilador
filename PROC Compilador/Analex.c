@@ -8,8 +8,6 @@
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
 
-// teste 4
-
 // teste 3
 
 // teste 2
