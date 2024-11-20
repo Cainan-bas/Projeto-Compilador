@@ -1,0 +1,9 @@
+_x = 2
+123.25
+->
+,123
+'
+"SJKDHAFSJDFH"
+const x = 0
+int 9
+_9
