@@ -8,6 +8,8 @@
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
 
+// teste 2
+
 //teste
 int comparaPalavraReservada(char *palavra) {
   for (int i = 0; i < NUM_PALAVRAS_RESERVADAS; i++) {
