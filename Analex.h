@@ -1,8 +1,11 @@
 #ifndef ANALEX
 #define ANALEX
 
+#include <stdio.h>
+#include <stdbool.h>
+
 #define TAM_MAX_LEXEMA 31
-#define NUM_PALAVRAS_RESERVADAS 28
+#define NUM_PALAVRAS_RESERVADAS 31
 
 enum TOKEN_CAT {
   ID = 1,
@@ -10,6 +13,7 @@ enum TOKEN_CAT {
   CT_I,
   CT_R,
   CT_C,
+  CT_STR,
   LT,
   PR,
   FIM_EXPR,
@@ -27,6 +31,8 @@ enum SINAISP {
   FECHA_PAR,
   ABRE_COL,
   FECHA_COL,
+  ABRE_CHAVES,
+  FECHA_CHAVES,
   MAIOR,
   MENOR,
   MAIOR_IGUAL,
@@ -42,9 +48,10 @@ enum SINAISP {
 
 enum PalavrasReservadas {
   CONST = 1,
-  Pr,
+  PROT,
+  DEF,
   INIT,
-  END,
+  ENDP, // perguntar pra alysson
   CHAR,
   INT,
   REAL,
@@ -66,19 +73,20 @@ enum PalavrasReservadas {
   GETINT,
   GETREAL,
   GETCHAR,
+  GETSTR,
   PUTINT,
   PUTREAL,
-  PUTCHAR
+  PUTCHAR,
+  PUTSTR
 };
 
-char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
-    "const",  "pr",     "init",    "end",     "char",   "int",     "real",
-    "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
-    "dt",     "by",     "if",      "endv",    "else",   "elif",    "endi",
-    "getout", "getint", "getreal", "getchar", "putint", "putreal", "putchar"};
+char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20];
+
+void error(char msg[]);
 
 typedef struct {
   enum TOKEN_CAT cat;
+  bool processado;
   union {
     int codigo;
     char lexema[TAM_MAX_LEXEMA];
@@ -87,6 +95,12 @@ typedef struct {
   };
 } TOKEN;
 
-#endif
+/* Variaveis globais */
+extern TOKEN t;
+extern FILE *fd;
+extern int contLinha;  // Contador de linhas do código fonte 
 
-int contLinha = 1;
+/* Assinaturas de funcoes */
+TOKEN Analex(FILE *);
+
+#endif
