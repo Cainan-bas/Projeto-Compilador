@@ -25,11 +25,11 @@ void Prog() {
            ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) ||
             (t.codigo == CHAR) || (t.codigo == BOOL))) {
         Decl_list_var();
-        // t = analex();
+
     }
     while ((t.cat == PR) && ((t.codigo == PROT) || (t.codigo == DEF))) {
         Decl_def_prot();
-        // t = analex();
+
     }
     if (t.cat != FIM_ARQ) error("Declaração ou definição de procedimento esperado!");
 }
@@ -53,9 +53,6 @@ void Decl_list_var(){
     t = analex();
 
     Decl_var(tipo, testa_const);
-
-    // t.processado = true;
-    // t = analex();
 
     while ((t.cat == SN) && (t.codigo == VIRGULA)) {
         t.processado = true;
@@ -480,8 +477,6 @@ void Func_Fator(){
             t = analex();
 
             Func_Expr();
-            // t.processado = true;
-            // t = analex();
 
             if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
             t.processado = true;
