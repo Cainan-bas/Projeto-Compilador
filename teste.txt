@@ -1,66 +1,30 @@
+const int d = 10
+const int b = 20, a = 30
 
-int a,b
+prot teste(int,&int)
 
-prot subtrair(&int [][], int, int)
-
-def somar(int r, int a, int b) 
-    int z
-    z = a + b
-    r = z
+def teste(int a,&int c)
+    const int z = 20
 endp
 
-// Ponto 1
 
-def subtrair(&int r[a][c], int a, int b) 
-    int w
-    w = a - b
-    r = w
-endp
 
-// Ponto 2
-
-def multiplicar(&int r, int a, int b) 
-    int x, y
-    x = a
-    y = b
-    r = x
-endp
-
-def dividir(&int r, int a, int b) 
-    if (b != 0) 
-        r = a / b
-    else  
-        putstr "Divisao por zero!"
-        r = 0
+def init 
+   const int b = 2
+   int c[d][a] = {1,2,3,4,5}
+   int fat,n,z
+   getint n
+   if (n <= 1)
+        fat = 1
+    else
+        fat = n 
+        z = n
+        while (z > a[2])
+            z = z - 1
+            fat = fat * z
+            
+        endw
     endi
-endp
 
-// Ponto 3
-
-def init  
-    int z
-    a = 10
-    b = 5
-
-    // Ponto 4
-
-    do somar(z, a, b)
-    putstr "Soma: "
-    putint z
-    putchar '\n'
-
-    do subtrair(z, a, b)
-    putstr "Subtracao: "
-    putint z
-    putchar '\n'
-
-    do multiplicar(z, a, b)
-    putstr "Multiplicacao: "
-    putint z
-    putchar '\n'
-
-    do dividir(z, a, b)
-    putstr "Divisao: "
-    putint z
-    putchar '\n'
+    a = b[2] + 3
 endp

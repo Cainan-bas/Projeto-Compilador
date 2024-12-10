@@ -53,7 +53,7 @@ void Decl_list_var(){
     t = analex();
 
     Decl_var(tipo, testa_const);
-    printf("\ncat %d\n", t.cat);
+
     while ((t.cat == SN) && (t.codigo == VIRGULA)) {
         t.processado = true;
         t = analex();
@@ -75,7 +75,7 @@ void Decl_var(int tipo, bool testa_const){
 
     testa_array = ((t.cat == SN) && (t.codigo == ABRE_COL));
     if(testa_array){
-        while (testa_array){
+        while ((t.cat == SN) && (t.codigo == ABRE_COL)){
             cont_dim++;
             t.processado = true;
             t = analex();
@@ -92,13 +92,15 @@ void Decl_var(int tipo, bool testa_const){
             if((t.cat != SN) && (t.codigo != FECHA_COL)) error ("Fecha colchete esperado");
             t.processado = true;
             t = analex();
-            break;
+            // break;
         }
     }
     if(t.cat == SN && t.codigo == ATRIBUICAO){
+        t.processado = true;
+        t = analex();
         if(testa_array){
-            t.processado = true;
-            t = analex();
+            // t.processado = true;
+            // t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_CHAVES)) error("Incialização de array inválida");
             t.processado = true;
             t = analex();
@@ -110,8 +112,8 @@ void Decl_var(int tipo, bool testa_const){
                     t = analex();
                     continue;
                 } else if (t.cat == SN && t.codigo == FECHA_CHAVES){
-                    // t.processado = true;
-                    // t = analex();
+                    t.processado = true;
+                    t = analex();
                     break;
                 } else {
                     error("Vírgula ou fecha parênteses esperado");
