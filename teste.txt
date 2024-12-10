@@ -1,17 +1,66 @@
-// calcular fatorial recursivo
 
-prot fatorial(&int, int)
+int a,b
 
-def init
-    int n, fat
-    getint n
-    do fatorial(fat, n)
-    putint fat
+prot subtrair(&int [][], int, int)
+
+def somar(int r, int a, int b) 
+    int z
+    z = a + b
+    r = z
 endp
-def fatorial(&int f, int n)
-    if (n <= 1) f = 1
-    else
-        do fatorial(f, n-1)
-        f = f*n
+
+// Ponto 1
+
+def subtrair(&int r[a][c], int a, int b) 
+    int w
+    w = a - b
+    r = w
+endp
+
+// Ponto 2
+
+def multiplicar(&int r, int a, int b) 
+    int x, y
+    x = a
+    y = b
+    r = x
+endp
+
+def dividir(&int r, int a, int b) 
+    if (b != 0) 
+        r = a / b
+    else  
+        putstr "Divisao por zero!"
+        r = 0
     endi
+endp
+
+// Ponto 3
+
+def init  
+    int z
+    a = 10
+    b = 5
+
+    // Ponto 4
+
+    do somar(z, a, b)
+    putstr "Soma: "
+    putint z
+    putchar '\n'
+
+    do subtrair(z, a, b)
+    putstr "Subtracao: "
+    putint z
+    putchar '\n'
+
+    do multiplicar(z, a, b)
+    putstr "Multiplicacao: "
+    putint z
+    putchar '\n'
+
+    do dividir(z, a, b)
+    putstr "Divisao: "
+    putint z
+    putchar '\n'
 endp

@@ -242,7 +242,7 @@ TOKEN Analex(FILE *fd) {
         estado = 12;
         lexema[tamL] = c;
         lexema[++tamL] = '\0';
-        t.cat = LT;
+        t.cat = CT_STR;
         strcpy(t.lexema, lexema);
         return t;
       } else {
@@ -575,8 +575,8 @@ void Print_Analex(TOKEN tk) {
     case CT_C:
       printf("<CT_C, %s> ", tk.lexema);
       break;
-    case LT:
-      printf("<LT, %s> ", tk.lexema);
+    case CT_STR:
+      printf("<CT_STR, %s> ", tk.lexema);
       break;
     case ERRO:
       printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");

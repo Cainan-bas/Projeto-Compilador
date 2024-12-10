@@ -20,7 +20,7 @@ TOKEN analex(){
 
 void Prog() {
     // escopo_atual = GBL;
-    t = analex();
+    // t = analex();
     while ((t.cat == PR) &&
            ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) ||
             (t.codigo == CHAR) || (t.codigo == BOOL))) {
@@ -53,12 +53,13 @@ void Decl_list_var(){
     t = analex();
 
     Decl_var(tipo, testa_const);
-
+    printf("\ncat %d\n", t.cat);
     while ((t.cat == SN) && (t.codigo == VIRGULA)) {
         t.processado = true;
         t = analex();
         Decl_var(tipo, testa_const);
     }
+    // talvez aqui
 }
 
 void Decl_var(int tipo, bool testa_const){
@@ -272,7 +273,7 @@ void Func_CMD(){
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("CMD -> WHILE inválida, falta abre parenteses");
         t.processado = true;
         t = analex();
-        while(!(t.cat = PR && t.codigo == ENDW)){
+        while(!(t.cat == PR && t.codigo == ENDW)){
             Func_CMD();
         }
         t.processado = true;
@@ -395,7 +396,7 @@ void Func_CMD(){
             t.processado = true;
             t = analex();
         }else{
-            error("CMD -> PUTSTR, Identificador esperado ou const inteira");
+            error("CMD -> PUTSTR, Identificador esperado ou const string");
         }
     }
 }

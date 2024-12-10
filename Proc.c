@@ -43,7 +43,7 @@ void TestaAnasint() {
     
     t.processado = true; 
     while (true) {
-        t = Analex(fd);
+        t = analex();
         if (t.cat == FIM_ARQ) {
             printf("\nFim do arquivo fonte encontrado!\n");
             break;
