@@ -8,6 +8,8 @@
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
 
+// int contLinha = 1;
+
 char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
     "const", "prot","def",     "init",    "endp",     "char",   "int",     "real",
     "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
@@ -383,209 +385,215 @@ TOKEN Analex(FILE *fd) {
   }
 }
 
-// int main() {
-//   FILE *fd;
-//   TOKEN tk;
-//   if ((fd = fopen("teste.txt", "r")) == NULL)
-//     error("Arquivo de entrada da expressao nao encontrado!");
+void Print_Analex(TOKEN tk) {
+  // FILE *fd;
+  // TOKEN t;
+  // if ((fd = fopen("teste.txt", "r")) == NULL)
+  //   error("Arquivo de entrada da expressao nao encontrado!");
 
-//   printf("LINHA %d: ", contLinha);
+  // printf("LINHA %d: ", contLinha);
 
-//   while (1) {
-//     tk = AnaLex(fd);
-//     switch (tk.cat) {
-//     case ID:
-//       printf("<ID, %s> ", tk.lexema);
-//       break;
-//     case PR:
-//       switch (tk.codigo) {
-//       case CONST:
-//           printf("<PR, CONST> ");
-//           break;
-//       case DEF:
-//           printf("<PR, DEF> ");
-//           break;
-//       case INIT:
-//           printf("<PR, INIT> ");
-//           break;
-//       case END:
-//           printf("<PR, END> ");
-//           break;
-//       case CHAR:
-//           printf("<PR, CHAR> ");
-//           break;
-//       case INT:
-//           printf("<PR, INT> ");
-//           break;
-//       case REAL:
-//           printf("<PR, REAL> ");
-//           break;
-//       case BOOL:
-//           printf("<PR, BOOL> ");
-//           break;
-//       case DO:
-//           printf("<PR, DO> ");
-//           break;
-//       case WHILE:
-//           printf("<PR, WHILE> ");
-//           break;
-//       case ENDW:
-//           printf("<PR, ENDW> ");
-//           break;
-//       case VAR:
-//           printf("<PR, VAR> ");
-//           break;
-//       case FROM:
-//           printf("<PR, FROM> ");
-//           break;
-//       case TO:
-//           printf("<PR, TO> ");
-//           break;
-//       case DT:
-//           printf("<PR, DT> ");
-//           break;
-//       case BY:
-//           printf("<PR, BY> ");
-//           break;
-//       case IF:
-//           printf("<PR, IF> ");
-//           break;
-//       case ENDV:
-//           printf("<PR, ENDV> ");
-//           break;
-//       case ELSE:
-//           printf("<PR, ELSE> ");
-//           break;
-//       case ELIF:
-//           printf("<PR, ELIF> ");
-//           break;
-//       case ENDI:
-//           printf("<PR, ENDI> ");
-//           break;
-//       case GETOUT:
-//           printf("<PR, GETOUT> ");
-//           break;
-//       case GETINT:
-//           printf("<PR, GETINT> ");
-//           break;
-//       case GETREAL:
-//           printf("<PR, GETREAL> ");
-//           break;
-//       case GETCHAR:
-//           printf("<PR, GETCHAR> ");
-//           break;
-//       case PUTINT:
-//           printf("<PR, PUTINT> ");
-//           break;
-//       case PUTREAL:
-//           printf("<PR, PUTREAL> ");
-//           break;
-//       case PUTCHAR:
-//           printf("<PR, PUTCHAR> ");
-//           break;
-//       case PUTSTR:
-//           printf("<PR, PUTSTR> ");
-//           break;
-//       case GETSTR:
-//           printf("<PR, GETSTR> ");
-//           break;
-//       }
-//       break;
-//     case SN:
-//       switch (tk.codigo) {
-//       case ADICAO:
-//         printf("<SN, ADICAO> ");
-//         break;
-//       case SUBTRACAO:
-//         printf("<SN, SUBTRACAO> ");
-//         break;
-//       case MULTIPLICACAO:
-//         printf("<SN, MULTIPLICACAO> ");
-//         break;
-//       case DIVISAO:
-//         printf("<SN, DIVISAO> ");
-//         break;
-//       case MENOR:
-//         printf("<SN, MENOR> ");
-//         break;
-//       case MENOR_IGUAL:
-//         printf("<SN, MENOR_IGUAL> ");
-//         break;
-//       case MAIOR:
-//         printf("<SN, MAIOR> ");
-//         break;
-//       case MAIOR_IGUAL:
-//         printf("<SN, MAIOR_IGUAL> ");
-//         break;
-//       case ATRIBUICAO:
-//         printf("<SN, ATRIBUICAO> ");
-//         break;
-//       case IGUALDADE:
-//         printf("<SN, IGUALDADE> ");
-//         break;
-//       case COND_NEGACAO:
-//         printf("<SN, COND_NEGACAO> ");
-//         break;
-//       case DIFERENTE:
-//         printf("<SN, DIFERENTE> ");
-//         break;
-//       case ABRE_PAR:
-//         printf("<SN, ABRE_PARENTESES> ");
-//         break;
-//       case FECHA_PAR:
-//         printf("<SN, FECHA_PARENTESES> ");
-//         break;
-//       case ABRE_COL:
-//         printf("<SN, ABRE_COLCHETE> ");
-//         break;
-//       case FECHA_COL:
-//         printf("<SN, FECHA_COLCHETE> ");
-//         break;
-//       case ABRE_CHAVES:
-//         printf("<SN, > ABRE_CHAVES");
-//         break;
-//       case FECHA_CHAVES:
-//         printf("<SN, > FECHA_CHAVES");
-//         break;
-//       case ENDERECO:
-//         printf("<SN, ENDERECO> ");
-//         break;
-//       case COND_ADICAO:
-//         printf("<SN, COND_ADICAO> ");
-//         break;
-//       case COND_ALTERNATIVA:
-//         printf("<SN, COND_ALTERNATIVA> ");
-//         break;
-//       case VIRGULA:
-//         printf("<SN, VIRGULA> ");
-//         break;
-//       }
-//       break;
+  while (1) {
+    switch (t.cat) {
+    case ID:
+      printf("<ID, %s> ", t.lexema);
+      break;
+    case PR:
+      switch (tk.codigo) {
+      case CONST:
+          printf("<PR, CONST> ");
+          break;
+      case DEF:
+          printf("<PR, DEF> ");
+          break;
+      case INIT:
+          printf("<PR, INIT> ");
+          break;
+      case ENDP:
+          printf("<PR, ENDP> ");
+          break;
+      case CHAR:
+          printf("<PR, CHAR> ");
+          break;
+      case INT:
+          printf("<PR, INT> ");
+          break;
+      case REAL:
+          printf("<PR, REAL> ");
+          break;
+      case BOOL:
+          printf("<PR, BOOL> ");
+          break;
+      case DO:
+          printf("<PR, DO> ");
+          break;
+      case WHILE:
+          printf("<PR, WHILE> ");
+          break;
+      case ENDW:
+          printf("<PR, ENDW> ");
+          break;
+      case VAR:
+          printf("<PR, VAR> ");
+          break;
+      case FROM:
+          printf("<PR, FROM> ");
+          break;
+      case TO:
+          printf("<PR, TO> ");
+          break;
+      case DT:
+          printf("<PR, DT> ");
+          break;
+      case BY:
+          printf("<PR, BY> ");
+          break;
+      case IF:
+          printf("<PR, IF> ");
+          break;
+      case ENDV:
+          printf("<PR, ENDV> ");
+          break;
+      case ELSE:
+          printf("<PR, ELSE> ");
+          break;
+      case ELIF:
+          printf("<PR, ELIF> ");
+          break;
+      case ENDI:
+          printf("<PR, ENDI> ");
+          break;
+      case GETOUT:
+          printf("<PR, GETOUT> ");
+          break;
+      case GETINT:
+          printf("<PR, GETINT> ");
+          break;
+      case GETREAL:
+          printf("<PR, GETREAL> ");
+          break;
+      case GETCHAR:
+          printf("<PR, GETCHAR> ");
+          break;
+      case PUTINT:
+          printf("<PR, PUTINT> ");
+          break;
+      case PUTREAL:
+          printf("<PR, PUTREAL> ");
+          break;
+      case PUTCHAR:
+          printf("<PR, PUTCHAR> ");
+          break;
+      case PUTSTR:
+          printf("<PR, PUTSTR> ");
+          break;
+      case GETSTR:
+          printf("<PR, GETSTR> ");
+          break;
+      case PROT:
+          printf("<PR, PROT> ");
+          break;
+      }
+      break;
+    case SN:
+      switch (tk.codigo) {
+      case ADICAO:
+        printf("<SN, ADICAO> ");
+        break;
+      case SUBTRACAO:
+        printf("<SN, SUBTRACAO> ");
+        break;
+      case MULTIPLICACAO:
+        printf("<SN, MULTIPLICACAO> ");
+        break;
+      case DIVISAO:
+        printf("<SN, DIVISAO> ");
+        break;
+      case MENOR:
+        printf("<SN, MENOR> ");
+        break;
+      case MENOR_IGUAL:
+        printf("<SN, MENOR_IGUAL> ");
+        break;
+      case MAIOR:
+        printf("<SN, MAIOR> ");
+        break;
+      case MAIOR_IGUAL:
+        printf("<SN, MAIOR_IGUAL> ");
+        break;
+      case ATRIBUICAO:
+        printf("<SN, ATRIBUICAO> ");
+        break;
+      case IGUALDADE:
+        printf("<SN, IGUALDADE> ");
+        break;
+      case COND_NEGACAO:
+        printf("<SN, COND_NEGACAO> ");
+        break;
+      case DIFERENTE:
+        printf("<SN, DIFERENTE> ");
+        break;
+      case ABRE_PAR:
+        printf("<SN, ABRE_PARENTESES> ");
+        break;
+      case FECHA_PAR:
+        printf("<SN, FECHA_PARENTESES> ");
+        break;
+      case ABRE_COL:
+        printf("<SN, ABRE_COLCHETE> ");
+        break;
+      case FECHA_COL:
+        printf("<SN, FECHA_COLCHETE> ");
+        break;
+      case ABRE_CHAVES:
+        printf("<SN, > ABRE_CHAVES");
+        break;
+      case FECHA_CHAVES:
+        printf("<SN, > FECHA_CHAVES");
+        break;
+      case ENDERECO:
+        printf("<SN, ENDERECO> ");
+        break;
+      case COND_ADICAO:
+        printf("<SN, COND_ADICAO> ");
+        break;
+      case COND_ALTERNATIVA:
+        printf("<SN, COND_ALTERNATIVA> ");
+        break;
+      case VIRGULA:
+        printf("<SN, VIRGULA> ");
+        break;
+      }
+      break;
 
-//     case CT_I:
-//       printf("<CT_I, %d> ", tk.valInt);
-//       break;
-//     case CT_R:
-//       printf("<CT_R, %f> ", tk.valFloat);
-//       break;
-//     case CT_C:
-//       printf("<CT_C, %s> ", tk.lexema);
-//       break;
-//     case LT:
-//       printf("<LT, %s> ", tk.lexema);
-//       break;
-//     case ERRO:
-//       printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");
-//       //tk.codigo = FIM_EXPR;
-//       printf("\nLINHA %d: ", ++contLinha);
-//       break;
-//     case FIM_EXPR:
-//       printf("\nLINHA %d: ", ++contLinha);
-//       break;
-//     case FIM_ARQ:
-//       printf("\nFim do arquivo fonte\n");
-//       fclose(fd);
-//       return 0;
-//     }
-//   }
-// }
+    case CT_I:
+      printf("<CT_I, %d> ", tk.valInt);
+      break;
+    case CT_R:
+      printf("<CT_R, %f> ", tk.valFloat);
+      break;
+    case CT_C:
+      printf("<CT_C, %s> ", tk.lexema);
+      break;
+    case LT:
+      printf("<LT, %s> ", tk.lexema);
+      break;
+    case ERRO:
+      printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");
+      //t.codigo = FIM_EXPR;
+      // printf("\nLINHA %d: ", ++contLinha);
+      ++contLinha;
+      printf("\n");
+      break;
+    case FIM_EXPR:
+      // printf("\nLINHA %d: ", ++contLinha);
+      ++contLinha;
+      printf("\n");
+      break;
+    case FIM_ARQ:
+      printf("\nFim do arquivo fonte\n");
+      fclose(fd);
+    }
+    break;
+  }
+}

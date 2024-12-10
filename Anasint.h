@@ -25,5 +25,5 @@ void Func_Expr();
 void Func_ExprSimples();
 void Func_Termo();
 void Func_Fator();
-
+TOKEN analex();
 #endif // ANASINT

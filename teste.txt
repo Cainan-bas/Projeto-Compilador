@@ -1,2 +1,17 @@
-const int a = 2
-int b[2]
+// calcular fatorial recursivo
+
+prot fatorial(&int, int)
+
+def init
+    int n, fat
+    getint n
+    do fatorial(fat, n)
+    putint fat
+endp
+def fatorial(&int f, int n)
+    if (n <= 1) f = 1
+    else
+        do fatorial(f, n-1)
+        f = f*n
+    endi
+endp

@@ -14,7 +14,7 @@ int contLinha;
 char TABS[200] = "";
 
 void TestaAnalex(){
-    if ((fd=fopen("teste2.txt", "r")) == NULL)
+    if ((fd=fopen("teste.txt", "r")) == NULL)
         error("Arquivo de entrada da expressão nao encontrado!");
     
     t.processado = true; // Garante que o próximo token será lido
@@ -38,7 +38,7 @@ void TestaAnalex(){
 
 void TestaAnasint() {
     
-    if ((fd=fopen("teste2.txt", "r")) == NULL)
+    if ((fd=fopen("teste.txt", "r")) == NULL)
         error("Arquivo de entrada da expressão nao encontrado!");
     
     t.processado = true; 
@@ -49,7 +49,9 @@ void TestaAnasint() {
             break;
         }
         Prog();
-        if (t.cat==FIM_EXPR)
+        // if (t.cat==FIM_EXPR)
+        //     printf("\nLINHA %d: Expressão sintaticamente correta!\n\n", contLinha - 1);
+        if (t.cat==FIM_ARQ)
             printf("\nLINHA %d: Expressão sintaticamente correta!\n\n", contLinha - 1);
         else {
             error("Erro de sintaxe!");
@@ -68,8 +70,8 @@ int main() {
     printf("\n\n[Análise Léxica -------------------]\n");
     TestaAnalex();
 
-    // contLinha = 1;
-    // printf("\n\n[Análise Sintática ----------------]\n");
-    // TestaAnasint();
+    contLinha = 1;
+    printf("\n\n[Análise Sintática ----------------]\n");
+    TestaAnasint();
 
 }

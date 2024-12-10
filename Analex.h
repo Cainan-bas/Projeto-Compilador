@@ -102,5 +102,6 @@ extern int contLinha;  // Contador de linhas do código fonte
 
 /* Assinaturas de funcoes */
 TOKEN Analex(FILE *);
+void Print_Analex(TOKEN);
 
 #endif
