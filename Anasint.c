@@ -201,11 +201,13 @@ void Decl_def_prot(){
         if((t.cat == PR && t.codigo == INIT)){
             t.processado = true;
             Insere_Tabela_decl_def_prot("init", escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            escopo_atual = LCL;
             t = analex();
         }
         else if(t.cat == ID ){
             t.processado = true;
             Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            escopo_atual = LCL;
             topoLocal = Consulta_Tabela(t.lexema);
             t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
@@ -231,7 +233,8 @@ void Decl_def_prot(){
                 if(t.cat != ID ) error("Identificador esperado"); //testa id
                 t.processado = true;
                 if(topoLocal != -1){
-                    topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal++);
+                    topoLocal += 1;
+                    topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal);
                 }
                 t = analex();
 
@@ -255,7 +258,7 @@ void Decl_def_prot(){
                     t.processado = true;
                     t = analex(); 
                 }
-                Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+                // Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
                 cont_dim = 0;
             }while(t.cat == SN && t.codigo == VIRGULA);
 
@@ -272,6 +275,8 @@ void Decl_def_prot(){
             Func_CMD();
         }
         t.processado = true;
+        Remove_Tabela();
+        // Imprimi_Tabela();
         t = analex();
     }
 }

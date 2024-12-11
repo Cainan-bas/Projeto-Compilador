@@ -4,7 +4,7 @@ const int b = 20, a = 30
 prot subtrair(&int [][], int, int)
 
 def subtrair(&int r[a][c], int a, int b) 
-    int w
+    int w, n
     w = a - b
     r = w
 endp

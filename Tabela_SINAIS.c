@@ -82,6 +82,9 @@ int Insere_Tabela(const char *lexema, Escopo escopo) {
 
     strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[TOPO].escopo = escopo;
+    
+    tabela_simbolos[TOPO].endereco = TOPO;
+    // Imprimi_Tabela();
 
     TOPO++;
     return TOPO-1;
@@ -98,6 +101,8 @@ void Insere_Tabela_decl_var_escalar(int k, Tipo tipo, Categoria categoria, Array
     tabela_simbolos[k].dim1 = 0;
     tabela_simbolos[k].dim2 = 0;
     tabela_simbolos[k].eh_const = eh_const;
+
+    tabela_simbolos[TOPO].endereco = TOPO;
     Imprimi_Tabela();
 }
 
@@ -112,6 +117,8 @@ void Insere_Tabela_simb_decl_var_array(int k, Tipo tipo, Categoria categoria, in
     tabela_simbolos[k].dim1 = (cont_dim >= 1) ? tam_dims[0] : 0;
     tabela_simbolos[k].dim2 = (cont_dim == 2) ? tam_dims[1] : 0;
     tabela_simbolos[k].eh_const = eh_const;
+
+    tabela_simbolos[TOPO].endereco = TOPO;
     Imprimi_Tabela();
 }
 
@@ -126,7 +133,7 @@ void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria ca
         tabela_simbolos[TOPO].categoria = categoria;
 
         Imprimi_Tabela();
-
+        tabela_simbolos[TOPO].endereco = TOPO;
         TOPO++;
     }
     // return TOPO-1;
@@ -147,7 +154,7 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
     } else{
         error("Mais colchetes que o permitido");
     }
-
+    tabela_simbolos[TOPO].endereco = TOPO;
     Imprimi_Tabela();
     
     TOPO++;
@@ -158,11 +165,23 @@ int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[topoLocal].zumbi = ZUMBI;
     if(tabela_simbolos[topoLocal+1].categoria != PARAMETRO){
+        Imprimi_Tabela();
         return -1;
     }
+    Imprimi_Tabela();
     return topoLocal;
 }
 
+void Remove_Tabela(){
+    // topo sempre aponta pra nada, a ultima posicao e TOPO - 1
+    while (TOPO >= 0) {
+        if (tabela_simbolos[TOPO-1].categoria == PARAMETRO) {
+            break;
+        }
+        TOPO--;
+        Imprimi_Tabela();
+    }
+}
 
 void Imprimi_Tabela() {
     printf("\n");
