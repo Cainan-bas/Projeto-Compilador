@@ -17,7 +17,8 @@ extern int contLinha;
 
 void Prog();
 void Decl_list_var();
-void Decl_var(int, bool);
+// void Decl_var(int, bool);
+void Decl_var();
 void Decl_def_prot();
 void Func_CMD();
 void Func_Atrib();

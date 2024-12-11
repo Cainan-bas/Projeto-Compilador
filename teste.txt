@@ -1,30 +1,10 @@
 const int d = 10
 const int b = 20, a = 30
 
-prot teste(int,&int)
+prot subtrair(&int [][], int, int)
 
-def teste(int a,&int c)
-    const int z = 20
-endp
-
-
-
-def init 
-   const int b = 2
-   int c[d][a] = {1,2,3,4,5}
-   int fat,n,z
-   getint n
-   if (n <= 1)
-        fat = 1
-    else
-        fat = n 
-        z = n
-        while (z > a[2])
-            z = z - 1
-            fat = fat * z
-            
-        endw
-    endi
-
-    a = b[2] + 3
+def subtrair(&int r[a][c], int a, int b) 
+    int w
+    w = a - b
+    r = w
 endp

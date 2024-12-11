@@ -1,87 +1,100 @@
-// #ifndef TABELA_SINAIS
-// #define TABELA_SINAIS
+#ifndef TABELA_SINAIS
+#define TABELA_SINAIS
 
-// #include <stdio.h>
-// #include <stdbool.h>
-// #include "Analex.h"
-// #include "Anasint.h"
+#include <stdio.h>
+#include <stdbool.h>
+#include "Analex.h"
+#include "Anasint.h"
 
-// #define TAM_MAX_TABELA 100
+#define _GREEN_ "\x1b[97;102m"
 
-// // struct da tabela
+#define TAM_MAX_TABELA 100
 
-// typedef union {
-//     int valor_int;
-//     float valor_real;
-//     char valor_char;
-//     bool valor_bool;
-// } ValorConst;
+//declaracao dos enums
 
-// typedef struct {
-//     char lexema[TAM_MAX_LEXEMA];
-//     int escopo;
-//     Tipo tipo;
-//     Categoria categoria;
-//     Passagem passagem;
-//     Zumbi zumbi;  
-//     Array array;           
-//     int dim1; 
-//     int dim2; 
-//     EhConst eh_const; 
-//     ValorConst valor_const;
-//     int endereco; 
-//     int rotulo;
-// } SIMBOLO;
+typedef enum {
+    GLB,
+    LCL
+}Escopo;
 
-// //declaracao dos enums
+typedef enum {
+    N_A_Tipo,
+    INT_Tipo = 7,     
+    REAL_Tipo = 8,    
+    CHAR_Tipo = 6,    
+    BOOL_Tipo = 9  
+} Tipo;
 
-// typedef enum {
-//     N_A,
-//     INT,     
-//     REAL,    
-//     CHAR,    
-//     BOOL   
-// } Tipo;
+typedef enum {
+    GLOBAL,
+    LOCAL,
+    PROCED = 3,
+    PARAMETRO,
+    PROTOTIPO = 2
+} Categoria;
 
-// typedef enum {
-//     GLOBAL,
-//     LOCAL,
-//     PROCED,
-//     PARAMETRO,
-//     PROTOTIPO
-// } Categoria;
+typedef enum {
+    N_A_Pass,
+    VALOR,
+    REFERENCIA
+} Passagem;
 
-// typedef enum {
-//     N_A,
-//     VALOR,
-//     REFE
-// } Passagem;
+typedef enum {
+    N_A_Zumb,
+    VIVO,
+    ZUMBI
+} Zumbi;
 
-// typedef enum {
-//     N_A,
-//     VIVO,
-//     ZUMBI
-// } Zumbi;
+typedef enum {
+    N_A_Array,
+    SIMPLES,
+    VETOR,
+    MATRIZ
+} Array;
 
-// typedef enum {
-//     N_A,
-//     SIMPLES,
-//     VETOR,
-//     MATRIZ
-// } Array;
+typedef enum {
+    NAO,
+    SIM
+} EhConst;
 
-// typedef enum {
-//     NAO,
-//     SIM
-// } EhConst;
+// struct da tabela
 
-// // Variaveis Globais
-// extern SIMBOLO tabela_simbolos[TAM_MAX_TABELA];
-// extern int TOPO = 0;
+typedef union {
+    int valor_int;
+    float valor_real;
+    char valor_char;
+    bool valor_bool;
+} ValorConst;
 
-// // Funcoes
-// void Insere_Tabela(TOKEN, int);
-// void Consulta_Tabela();
-// void Remove_Tabela();
+typedef struct {
+    char lexema[TAM_MAX_LEXEMA];
+    Escopo escopo;
+    Tipo tipo;
+    Categoria categoria;
+    Passagem passagem;
+    Zumbi zumbi;  
+    Array array;           
+    int dim1; 
+    int dim2; 
+    EhConst eh_const; 
+    ValorConst valor_const;
+    int endereco; 
+    int rotulo;
+} SIMBOLO;
 
-// #endif
+// Variaveis Globais
+extern SIMBOLO tabela_simbolos[TAM_MAX_TABELA];
+extern int TOPO;
+
+// Funcoes
+int Insere_Tabela(const char*, Escopo);
+int Consulta_Tabela(const char*);
+void Insere_Tabela_decl_var_escalar(int, Tipo, Categoria, Array, EhConst);
+void Insere_Tabela_simb_decl_var_array(int, Tipo, Categoria, int, int[], EhConst);
+void Insere_Tabela_decl_def_prot(const char *, Escopo, Categoria);
+void Insere_Tabela_parametro(Escopo, Tipo, Categoria, Passagem, int);
+int Insere_Tabela_parametro_procedimento(const char*, int);
+void Remove_Tabela();
+void Imprimi_Tabela();
+
+#endif

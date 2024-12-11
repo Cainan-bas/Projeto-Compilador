@@ -3,12 +3,20 @@
 #include <string.h>
 #include "Analex.h"
 #include "Anasint.h"
+#include "Tabela_SINAIS.h" 
 
 
 /* Variaveis globais */
 TOKEN t;
 FILE *fd;
 int contLinha;
+
+// variaveis da tabela
+int escopo_atual;
+bool testa_const;
+int tipo;
+bool testa_array, testa_matriz;
+int tam_dims[MAX_ARRAY_DIM];
 
 TOKEN analex(){
     do{
@@ -19,24 +27,23 @@ TOKEN analex(){
 }
 
 void Prog() {
-    // escopo_atual = GBL;
+    escopo_atual = GLB; 
     // t = analex();
     while ((t.cat == PR) &&
            ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) ||
             (t.codigo == CHAR) || (t.codigo == BOOL))) {
         Decl_list_var();
-
     }
     while ((t.cat == PR) && ((t.codigo == PROT) || (t.codigo == DEF))) {
+        escopo_atual = GLB;
         Decl_def_prot();
-
     }
     if (t.cat != FIM_ARQ) error("Declaração ou definição de procedimento esperado!");
 }
 
 void Decl_list_var(){
-    bool testa_const;
-    int tipo;
+    // bool testa_const;
+    // int tipo;
 
     testa_const = ((t.cat == PR) && (t.codigo == CONST)); //testa o const
 
@@ -52,24 +59,23 @@ void Decl_list_var(){
     t.processado = true;
     t = analex();
 
-    Decl_var(tipo, testa_const);
+    Decl_var();
 
     while ((t.cat == SN) && (t.codigo == VIRGULA)) {
         t.processado = true;
         t = analex();
-        Decl_var(tipo, testa_const);
+        Decl_var();
     }
-    // talvez aqui
 }
 
-void Decl_var(int tipo, bool testa_const){
-    int k, i;
-    bool testa_array;
+//void Decl_var(int tipo, bool testa_const){
+void Decl_var(){
+    int topoLocal;
+    int posicao;
     int cont_dim = 0;
-    int tam_dims[MAX_ARRAY_DIM];
 
     if(t.cat != ID) error("Identificador esperado");
-
+    topoLocal = Insere_Tabela(t.lexema, escopo_atual);
     t.processado = true;
     t = analex();
 
@@ -84,6 +90,8 @@ void Decl_var(int tipo, bool testa_const){
                 t.processado = true;
                 t = analex();
             } else if (t.cat == ID){
+                posicao = Consulta_Tabela(t.lexema);
+                tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;
                 t.processado = true;
                 t = analex();
             } else {
@@ -94,6 +102,9 @@ void Decl_var(int tipo, bool testa_const){
             t = analex();
             // break;
         }
+        Insere_Tabela_simb_decl_var_array(topoLocal, tipo, (escopo_atual == GLB ? GLOBAL : LOCAL), cont_dim, tam_dims, testa_const);
+    }else{
+        Insere_Tabela_decl_var_escalar(topoLocal, tipo, (escopo_atual == GLB ? GLOBAL : LOCAL), SIMPLES, testa_const);
     }
     if(t.cat == SN && t.codigo == ATRIBUICAO){
         t.processado = true;
@@ -130,13 +141,19 @@ void Decl_var(int tipo, bool testa_const){
 void Decl_def_prot(){
     int cont_dim = 0;
     int tam_dims[MAX_ARRAY_DIM];
+    int protLocal;
+    int passagemLocal;
+    int topoLocal;
 
     if(t.cat == PR && t.codigo == PROT){
         t.processado = true;
+        protLocal = t.codigo;
         t = analex();
         
         if(t.cat != ID) error("Identificador esperado"); //testa idprot
         t.processado = true;
+        Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+        escopo_atual = LCL;
         t = analex();
 
         if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
@@ -145,8 +162,10 @@ void Decl_def_prot(){
             t.processado = true;
             t = analex();
 
+            passagemLocal = VALOR;
             if ((t.cat == SN) && (t.codigo == ENDERECO)) {
                 t.processado = true;
+                passagemLocal = REFERENCIA;
                 t = analex();
             }
 
@@ -154,9 +173,11 @@ void Decl_def_prot(){
             (t.codigo == CHAR) || (t.codigo == BOOL)))) error("Tipo esperado.");
 
             t.processado = true;
+            tipo = t.codigo;
             t = analex();
 
             while((t.cat == SN) && (t.codigo == ABRE_COL)){
+                cont_dim++;
                 t.processado = true;
                 t = analex();
 
@@ -164,6 +185,8 @@ void Decl_def_prot(){
                 t.processado = true;
                 t = analex(); 
             }
+            Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+            cont_dim = 0;
         }while(t.cat == SN && t.codigo == VIRGULA);
 
         if(!(t.cat == SN && t.codigo == FECHA_PAR)) error("Incialização de prot inválida, falta parenteses");
@@ -172,14 +195,18 @@ void Decl_def_prot(){
 
     } else {
         t.processado = true;
+        protLocal = t.codigo;
         t = analex();
 
         if((t.cat == PR && t.codigo == INIT)){
             t.processado = true;
+            Insere_Tabela_decl_def_prot("init", escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
             t = analex();
         }
         else if(t.cat == ID ){
             t.processado = true;
+            Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            topoLocal = Consulta_Tabela(t.lexema);
             t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
         
@@ -187,8 +214,10 @@ void Decl_def_prot(){
                 t.processado = true;
                 t = analex();
 
+                passagemLocal = VALOR;
                 if ((t.cat == SN) && (t.codigo == ENDERECO)) {
                     t.processado = true;
+                    passagemLocal = REFERENCIA;
                     t = analex();
                 }
 
@@ -196,10 +225,14 @@ void Decl_def_prot(){
                 (t.codigo == CHAR) || (t.codigo == BOOL)))) error("Tipo esperado.");
 
                 t.processado = true;
+                tipo = t.codigo;
                 t = analex();
 
                 if(t.cat != ID ) error("Identificador esperado"); //testa id
                 t.processado = true;
+                if(topoLocal != -1){
+                    topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal++);
+                }
                 t = analex();
 
                 while((t.cat == SN) && (t.codigo == ABRE_COL)){
@@ -222,7 +255,8 @@ void Decl_def_prot(){
                     t.processado = true;
                     t = analex(); 
                 }
-
+                Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+                cont_dim = 0;
             }while(t.cat == SN && t.codigo == VIRGULA);
 
             if(!(t.cat == SN && t.codigo == FECHA_PAR)) error("Incialização de prot inválida, falta parenteses");
