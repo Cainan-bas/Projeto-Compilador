@@ -62,7 +62,7 @@ typedef enum {
 typedef union {
     int valor_int;
     float valor_real;
-    char valor_char;
+    char valor_char[100];
     bool valor_bool;
 } ValorConst;
 
@@ -90,6 +90,7 @@ extern int TOPO;
 int Insere_Tabela(const char*, Escopo);
 int Consulta_Tabela(const char*);
 void Insere_Tabela_decl_var_escalar(int, Tipo, Categoria, Array, EhConst);
+void Insere_Valor(int , TOKEN , int , int []);
 void Insere_Tabela_simb_decl_var_array(int, Tipo, Categoria, int, int[], EhConst);
 void Insere_Tabela_decl_def_prot(const char *, Escopo, Categoria);
 void Insere_Tabela_parametro(Escopo, Tipo, Categoria, Passagem, int);

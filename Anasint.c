@@ -83,6 +83,7 @@ void Decl_var(){
     if(testa_array){
         while ((t.cat == SN) && (t.codigo == ABRE_COL)){
             cont_dim++;
+            if(cont_dim>2) error("Definicao maior que matriz encontrada");
             t.processado = true;
             t = analex();
             if(t.cat == CT_I){
@@ -91,6 +92,8 @@ void Decl_var(){
                 t = analex();
             } else if (t.cat == ID){
                 posicao = Consulta_Tabela(t.lexema);
+                if (!(posicao != -1)) error("Identificador de matriz/vetor,nao encontrado");
+                if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro");
                 tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;
                 t.processado = true;
                 t = analex();
@@ -131,6 +134,7 @@ void Decl_var(){
                 }
             }
         } else {
+            Insere_Valor(topoLocal, t,0,0);
             t.processado = true;
             t = analex();
         }
@@ -240,8 +244,10 @@ void Decl_def_prot(){
                 }
                 t = analex();
 
+                int posicao;
                 while((t.cat == SN) && (t.codigo == ABRE_COL)){
                     cont_dim++;
+                    if(cont_dim>2) error("Definicao maior que matriz encontrada");
                     t.processado = true;
                     t = analex();
 
@@ -250,6 +256,10 @@ void Decl_def_prot(){
                         t.processado = true;
                         t = analex();
                     } else if (t.cat == ID){
+                        posicao = Consulta_Tabela(t.lexema);
+                        if (!(posicao != -1)) error("Identificador de matriz/vetor,nao encontrado");
+                        if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro");
+                        tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;
                         t.processado = true;
                         t = analex();
                     } else {
@@ -258,9 +268,9 @@ void Decl_def_prot(){
 
                     if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
                     t.processado = true;
+                    Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
-                // Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
                 cont_dim = 0;
             }while(t.cat == SN && t.codigo == VIRGULA);
 

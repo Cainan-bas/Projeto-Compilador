@@ -102,8 +102,27 @@ void Insere_Tabela_decl_var_escalar(int k, Tipo tipo, Categoria categoria, Array
     tabela_simbolos[k].dim2 = 0;
     tabela_simbolos[k].eh_const = eh_const;
 
-    tabela_simbolos[TOPO].endereco = TOPO;
+    // tabela_simbolos[TOPO].endereco = TOPO;
     Imprimi_Tabela();
+}
+
+void Insere_Valor(int k, TOKEN valor, int cont_dim, int tam_dims[]){
+    // Insere valor dimensao vetor/matriz
+    if(tabela_simbolos[k].array == VETOR || tabela_simbolos[k].array == MATRIZ){
+        tabela_simbolos[k].dim1 = (cont_dim >= 1) ? tam_dims[0] : 0;
+        tabela_simbolos[k].dim2 = (cont_dim == 2) ? tam_dims[1] : 0;
+    }else{
+        // Insere valor const
+        if(valor.cat == CT_I && tabela_simbolos[k].tipo == INT_Tipo){
+            tabela_simbolos[k].valor_const.valor_int = valor.valInt;    
+        } else if (valor.cat == CT_R && tabela_simbolos[k].tipo == REAL_Tipo){
+            tabela_simbolos[k].valor_const.valor_real = valor.valFloat;
+        } else if (valor.cat == CT_C && tabela_simbolos[k].tipo == CHAR_Tipo){
+            strcpy(tabela_simbolos[k].valor_const.valor_char, valor.lexema);
+        } else if (valor.cat == CT_I && tabela_simbolos[k].tipo == BOOL_Tipo){
+            tabela_simbolos[k].valor_const.valor_bool = (valor.valInt == 0 ? 0 : 1);
+        }
+    }
 }
 
 void Insere_Tabela_simb_decl_var_array(int k, Tipo tipo, Categoria categoria, int cont_dim, int tam_dims[], EhConst eh_const) {
