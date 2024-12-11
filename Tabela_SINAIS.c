@@ -183,6 +183,26 @@ void Remove_Tabela(){
     }
 }
 
+void TornarVivo(TOKEN nomeDef){
+    int posicao = Consulta_Tabela(nomeDef.lexema);
+    while(posicao <= TOPO){
+        posicao+=1;
+        if (tabela_simbolos[posicao].categoria != PARAMETRO) break;
+        tabela_simbolos[posicao].zumbi = VIVO;
+        Imprimi_Tabela();
+    }
+}
+
+void TornarZumbi(TOKEN nomeDef){
+    int posicao = Consulta_Tabela(nomeDef.lexema);
+    while(posicao <= TOPO){
+        posicao+=1;
+        if (tabela_simbolos[posicao].categoria != PARAMETRO) break;
+        tabela_simbolos[posicao].zumbi = ZUMBI;
+        Imprimi_Tabela();
+    }
+}
+
 void Imprimi_Tabela() {
     printf("\n");
     printf("┌───────────────────────────────┬──────┬────────┬───────────┬────────────┬─────────┬─────────┬────────┬────────┬───────────┬───────────┬──────────┐\n");

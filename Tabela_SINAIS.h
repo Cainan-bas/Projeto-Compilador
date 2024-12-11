@@ -95,6 +95,8 @@ void Insere_Tabela_decl_def_prot(const char *, Escopo, Categoria);
 void Insere_Tabela_parametro(Escopo, Tipo, Categoria, Passagem, int);
 int Insere_Tabela_parametro_procedimento(const char*, int);
 void Remove_Tabela();
+void TornarVivo(TOKEN);
+void TornarZumbi(TOKEN);
 void Imprimi_Tabela();
 
 #endif

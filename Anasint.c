@@ -139,6 +139,7 @@ void Decl_var(){
 }
 
 void Decl_def_prot(){
+    TOKEN nomeID;
     int cont_dim = 0;
     int tam_dims[MAX_ARRAY_DIM];
     int protLocal;
@@ -207,6 +208,7 @@ void Decl_def_prot(){
         else if(t.cat == ID ){
             t.processado = true;
             Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            nomeID = t;
             escopo_atual = LCL;
             topoLocal = Consulta_Tabela(t.lexema);
             t = analex();
@@ -268,6 +270,7 @@ void Decl_def_prot(){
         }
 
         while ((t.cat == PR) && ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) || (t.codigo == CHAR) || (t.codigo == BOOL))) {
+            TornarVivo(nomeID);
             Decl_list_var();
         }
 
@@ -276,6 +279,7 @@ void Decl_def_prot(){
         }
         t.processado = true;
         Remove_Tabela();
+        TornarZumbi(nomeID);
         // Imprimi_Tabela();
         t = analex();
     }
