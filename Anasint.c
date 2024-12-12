@@ -21,7 +21,7 @@ int tam_dims[MAX_ARRAY_DIM];
 TOKEN analex(){
     do{
         t = Analex(fd);
-        Print_Analex(t);
+        // Print_Analex(t);
     }while(t.cat == FIM_EXPR);
     return t;
 }
@@ -241,6 +241,9 @@ void Decl_def_prot(){
                 if(topoLocal != -1){
                     topoLocal += 1;
                     topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal);
+                } else {
+                    topoLocal = TOPO;
+                    topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal);
                 }
                 t = analex();
 
@@ -271,7 +274,10 @@ void Decl_def_prot(){
                     Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
-                cont_dim = 0;
+                // problematico esse if
+                if(topoLocal == -1){ Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+
+                }cont_dim = 0;
             }while(t.cat == SN && t.codigo == VIRGULA);
 
             if(!(t.cat == SN && t.codigo == FECHA_PAR)) error("Incialização de prot inválida, falta parenteses");

@@ -74,11 +74,11 @@ int Consulta_Tabela(const char *lexema) {
 }
 
 int Insere_Tabela(const char *lexema, Escopo escopo) {
-    
-    if (Consulta_Tabela(lexema) != -1) {
-        printf("Erro: Símbolo '%s' já declarado.\n", lexema);
-        return -1;
-    }
+    // melhorar essa consulta na tabela, talvez colocar por token
+    // if (Consulta_Tabela(lexema) != -1) {
+    //     printf("Erro: Símbolo '%s' já declarado.\n", lexema);
+    //     return -1;
+    // }
 
     strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[TOPO].escopo = escopo;
@@ -162,8 +162,8 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
 
     tabela_simbolos[TOPO].escopo = escopo;
     tabela_simbolos[TOPO].tipo = tipo;
-    tabela_simbolos[TOPO].categoria = categoria;
     tabela_simbolos[TOPO].passagem = passagem;
+    tabela_simbolos[TOPO].categoria = categoria;
     if(cont_dim == 0){
         tabela_simbolos[TOPO].array = SIMPLES;
     } else if (cont_dim == 1){
@@ -181,11 +181,13 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
 }
 
 int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
+// void Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[topoLocal].zumbi = ZUMBI;
     if(tabela_simbolos[topoLocal+1].categoria != PARAMETRO){
         Imprimi_Tabela();
         return -1;
+        // return TOPO;
     }
     Imprimi_Tabela();
     return topoLocal;
@@ -224,6 +226,7 @@ void TornarZumbi(TOKEN nomeDef){
 
 void Imprimi_Tabela() {
     printf("\n");
+    printf("  TOPO  ->  %d\n", TOPO);
     printf("┌───────────────────────────────┬──────┬────────┬───────────┬────────────┬─────────┬─────────┬────────┬────────┬───────────┬───────────┬──────────┐\n");
     printf("│           Lexema              │ Tipo │ Escopo │ Categoria │  Passagem  │  Zumbi  │  Array  │ Dim. 1 │ Dim. 2 │ EhConst   │ ValorConst│ Endereço │\n");
     printf("├───────────────────────────────┼──────┼────────┼───────────┼────────────┼─────────┼─────────┼────────┼────────┼───────────┼───────────┼──────────┤\n");

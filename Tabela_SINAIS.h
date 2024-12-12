@@ -94,7 +94,9 @@ void Insere_Valor(int , TOKEN , int , int []);
 void Insere_Tabela_simb_decl_var_array(int, Tipo, Categoria, int, int[], EhConst);
 void Insere_Tabela_decl_def_prot(const char *, Escopo, Categoria);
 void Insere_Tabela_parametro(Escopo, Tipo, Categoria, Passagem, int);
+
 int Insere_Tabela_parametro_procedimento(const char*, int);
+
 void Remove_Tabela();
 void TornarVivo(TOKEN);
 void TornarZumbi(TOKEN);
