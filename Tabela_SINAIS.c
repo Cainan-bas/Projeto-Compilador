@@ -223,7 +223,7 @@ void TornarVivo(TOKEN nomeDef){
         posicao+=1;
         if (tabela_simbolos[posicao].categoria != PARAMETRO) break;
         tabela_simbolos[posicao].zumbi = VIVO;
-        Imprimi_Tabela();
+        // Imprimi_Tabela();
     }
 }
 
@@ -233,7 +233,7 @@ void TornarZumbi(TOKEN nomeDef){
         posicao+=1;
         if (tabela_simbolos[posicao].categoria != PARAMETRO) break;
         tabela_simbolos[posicao].zumbi = ZUMBI;
-        Imprimi_Tabela();
+        // Imprimi_Tabela();
     }
 }
 
