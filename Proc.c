@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include "Analex.h"
 #include "Anasint.h"
+#include "Tabela_SINAIS.h"
 // #include "Funcaux.h"
 
 /* Variaveis globais */
@@ -51,6 +52,7 @@ void TestaAnasint() {
         Prog();
         // if (t.cat==FIM_EXPR)
         //     printf("\nLINHA %d: Expressão sintaticamente correta!\n\n", contLinha - 1);
+        Imprimi_Tabela();
         if (t.cat==FIM_ARQ)
             printf("\nLINHA %d: Expressão sintaticamente correta!\n\n", contLinha - 1);
         else {

@@ -14,7 +14,7 @@ char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
     "const", "prot","def",     "init",    "endp",     "char",   "int",     "real",
     "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
     "dt",     "by",     "if",      "endv",    "else",   "elif",    "endi",
-    "getout", "getint", "getreal", "getchar", "getstr","putint", "putreal", "putchar", "putstr"};
+    "getout", "getint", "getreal", "getchar", "getstr","putint", "putreal", "putchr", "putstr"};
 
 int comparaPalavraReservada(char *palavra) {
   for (int i = 0; i < NUM_PALAVRAS_RESERVADAS; i++) {

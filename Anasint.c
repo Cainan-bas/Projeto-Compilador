@@ -21,7 +21,7 @@ int tam_dims[MAX_ARRAY_DIM];
 TOKEN analex(){
     do{
         t = Analex(fd);
-        // Print_Analex(t);
+        Print_Analex(t);
     }while(t.cat == FIM_EXPR);
     return t;
 }
@@ -166,6 +166,8 @@ void Decl_def_prot(){
         do{
             t.processado = true;
             t = analex();
+            
+            if(t.cat == SN && t.codigo == FECHA_PAR) break;
 
             passagemLocal = VALOR;
             if ((t.cat == SN) && (t.codigo == ENDERECO)) {
@@ -221,6 +223,8 @@ void Decl_def_prot(){
             do{
                 t.processado = true;
                 t = analex();
+
+                if(t.cat == SN && t.codigo == FECHA_PAR) break;
 
                 passagemLocal = VALOR;
                 if ((t.cat == SN) && (t.codigo == ENDERECO)) {
@@ -444,6 +448,9 @@ void Func_CMD(){
     } else if (t.cat == PR && t.codigo == PUTCHAR){
         t.processado = true;
         t = analex();
+        printf("PUTCHAR\n");
+        printf("Categoria %d\n", t.cat);
+    printf("Codigo %d\n", t.codigo);
         if(t.cat == ID || t.cat == CT_C){
             t.processado = true;
             t = analex();
@@ -477,7 +484,11 @@ void Func_Atrib(){
         t.processado = true;
         t = analex(); 
     }
-    if (!(t.cat == SN && t.codigo == ATRIBUICAO)) error("Sinal de igual esperado");
+    if (!(t.cat == SN && t.codigo == ATRIBUICAO)){ 
+    //     printf("ATRIBUICAO\n");
+    //     printf("Categoria %d\n", t.cat);
+    // printf("Codigo %d\n", t.codigo);
+        error("Sinal de igual esperado");}
     t.processado = true;
     t = analex();
 

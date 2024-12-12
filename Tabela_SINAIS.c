@@ -180,23 +180,36 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
     // return TOPO-1;
 }
 
+// int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
+// // void Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
+//     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
+//     tabela_simbolos[topoLocal].zumbi = ZUMBI;
+//     if(tabela_simbolos[topoLocal+1].categoria != PARAMETRO){
+//         Imprimi_Tabela();
+//         return -1;
+//         // return TOPO;
+//     }
+//     Imprimi_Tabela();
+//     return topoLocal;
+// }
+
 int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
 // void Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[topoLocal].zumbi = ZUMBI;
-    if(tabela_simbolos[topoLocal+1].categoria != PARAMETRO){
+    if(tabela_simbolos[topoLocal].categoria == PARAMETRO){
         Imprimi_Tabela();
-        return -1;
+        return topoLocal;
         // return TOPO;
     }
     Imprimi_Tabela();
-    return topoLocal;
+    return -1;
 }
 
 void Remove_Tabela(){
     // topo sempre aponta pra nada, a ultima posicao e TOPO - 1
     while (TOPO >= 0) {
-        if (tabela_simbolos[TOPO-1].categoria == PARAMETRO) {
+        if (tabela_simbolos[TOPO-1].categoria == PARAMETRO || tabela_simbolos[TOPO-1].categoria == PROCED || tabela_simbolos[TOPO-1].categoria == PROTOTIPO) {
             break;
         }
         TOPO--;
