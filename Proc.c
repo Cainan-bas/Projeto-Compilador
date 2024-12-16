@@ -23,7 +23,7 @@ void TestaAnalex(){
         t = Analex(fd);
         if (t.cat == ERRO){
             printf("\nLINHA %d: ", contLinha);
-            printf("Erro lexico ");
+            error("Erro lexico ");
             break;
         }
         if (t.cat == FIM_ARQ) {

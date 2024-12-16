@@ -1,137 +1,45 @@
-int a, b 
 
- 
-
-prot subtrair(&int, int, int) 
-
- 
-
- 
-
-def somar(&int r, int a, int b) 
-
-int z 
-
-z = a + b  
-
-r = z 
-
-endp 
-
- 
-
-//Ponto 1 
-
- 
-
-def subtrair(&int r, int a, int b) 
-
-    int w 
-
-w = a - b 
-
-r = w 
-
- 
-
-// Ponto 2 
-
-endp 
-
- 
-
-def multiplicar(&int r, int a, int b) 
-
-int x, y 
-
-x = a 
-
-y = b 
-
-r = x * y 
-
- 
-
-endp 
-
- 
-
-def dividir(&int r, int a, int b) 
-
-if (b != 0) r = a / b 
-
-else  
-
-putstr "Divisao por zero!" 
-
-r = 0 
-
-endi 
-
-endp 
-
- 
-
-// Ponto 3 
-
- 
-
-def init  
-
- 
-
-int z 
-
- 
-
-a = 10 
-
-b = 5 
-
- 
-
-// Ponto 4 
-
- 
-
-do somar(z, a, b) 
-
-putstr "Soma: " 
-
-putint z 
-
-putchr '\n' 
-
- 
-
-do subtrair(z, a, b) 
-
-putstr "Subtracao: " 
-
-putint z 
-
-putchr '\n' 
-
- 
-
-do multiplicar(z, a, b) 
-
-putstr "Multiplicacao: " 
-
-putint z 
-
-putchr '\n' 
-
- 
-
-do dividir(z, a, b) 
-
-putstr "Divisao: " 
-
-putint z 
-
-putchr '\n' 
-
- 
-
-endp 
+int index = 0
+const int maxTamTarefas = 1024, maxLetters = 32
+char tarefas[maxTamTarefas][maxTamTarefas]
+
+
+prot adicionarTarefa(char[])
+prot listarTarefas()
+
+def adicionarTarefa(char t[maxLetters])
+
+    tarefas[index] = t
+    index = index + 1
+endp
+
+
+def listarTarefas()
+    int index = 0
+    while(1)
+    if(tarefas[index] == 'a') 
+        getout
+    endi
+    putchar tarefas
+    index = index + 1
+    endw
+endp
+
+def init
+    char tarefa[maxLetters]
+    while(1)
+        putstr "Digite 0 para sair"
+        putchar '\n'
+        putstr "Diga a tarefa"
+        getstr tarefa
+    
+        if(tarefa == ' ')
+            putstr "A tarefa não deve ser vazia"
+        elif(tarefa == 0) 
+            getout
+        endi
+        do adicionarTarefa(tarefa)
+    endw
+
+    do listarTarefas()
+endp

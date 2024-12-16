@@ -14,7 +14,7 @@ char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
     "const", "prot","def",     "init",    "endp",     "char",   "int",     "real",
     "bool",   "do",     "while",   "endw",    "var",    "from",    "to",
     "dt",     "by",     "if",      "endv",    "else",   "elif",    "endi",
-    "getout", "getint", "getreal", "getchar", "getstr","putint", "putreal", "putchr", "putstr"};
+    "getout", "getint", "getreal", "getchar", "getstr","putint", "putreal", "putchar", "putstr"};
 
 int comparaPalavraReservada(char *palavra) {
   for (int i = 0; i < NUM_PALAVRAS_RESERVADAS; i++) {
@@ -234,7 +234,9 @@ TOKEN Analex(FILE *fd) {
       }
       break;
     case 11:
-      if (isprint(c) && c != '\n' && c != '"') {
+      //if (isprint(c) && c != '\n' && c != '"') {
+      //if (((c >= 32 && c <= 126) || (c >= 160)) && c != '\n' && c != '"'){
+      if(c != '\n' && c != '"'){
         estado = 11;
         lexema[tamL] = c;
         lexema[++tamL] = '\0';

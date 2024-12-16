@@ -3,6 +3,13 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+// #include <locale.h>
+
+// // Lidar com acentos
+// __attribute__((constructor))
+// static void configure_locale() {
+//     setlocale(LC_ALL, "pt_BR.UTF-8");
+// }
 
 #define TAM_MAX_LEXEMA 31
 #define NUM_PALAVRAS_RESERVADAS 31
@@ -51,7 +58,7 @@ enum PalavrasReservadas {
   PROT,
   DEF,
   INIT,
-  ENDP, // perguntar pra alysson
+  ENDP,
   CHAR,
   INT,
   REAL,

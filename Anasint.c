@@ -21,9 +21,21 @@ int tam_dims[MAX_ARRAY_DIM];
 TOKEN analex(){
     do{
         t = Analex(fd);
-        // Print_Analex(t);
+        Print_Analex(t);
+        if(t.cat == ERRO) error("Erro lexico encontrado");
     }while(t.cat == FIM_EXPR);
     return t;
+}
+
+void printError(TOKEN aux){
+    printf("------------------------------\n");
+    printf("Categoria: %d\n", t.cat);
+    printf("Codigo: %d\n", t.codigo);
+    printf("Lexema: %s\n", t.lexema);
+    printf("Pressione Enter para continuar...\n");
+    getchar();
+    printf("------------------------------\n");
+    
 }
 
 void Prog() {
@@ -109,7 +121,9 @@ void Decl_var(){
     }else{
         Insere_Tabela_decl_var_escalar(topoLocal, tipo, (escopo_atual == GLB ? GLOBAL : LOCAL), SIMPLES, testa_const);
     }
+
     if(t.cat == SN && t.codigo == ATRIBUICAO){
+        
         t.processado = true;
         t = analex();
         if(testa_array){
@@ -457,6 +471,7 @@ void Func_CMD(){
     } else if (t.cat == PR && t.codigo == PUTSTR){
         t.processado = true;
         t = analex();
+        printError(t);
         if(t.cat == ID || t.cat == CT_STR){
             t.processado = true;
             t = analex();
@@ -471,7 +486,7 @@ void Func_Atrib(){
     t.processado = true;
     t = analex();
 
-    while((t.cat == SN) && (t.codigo == ABRE_COL)){
+    while((t.cat == SN) && (t.codigo == ABRE_COL)){ // testar para vetor e matriz
         t.processado = true;
         t = analex();
 
@@ -480,6 +495,7 @@ void Func_Atrib(){
         if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
         t.processado = true;
         t = analex(); 
+        
     }
     if (!(t.cat == SN && t.codigo == ATRIBUICAO)){ 
         error("Sinal de igual esperado");}
