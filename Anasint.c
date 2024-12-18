@@ -105,7 +105,7 @@ void Decl_var(){
             } else if (t.cat == ID){
                 posicao = Consulta_Tabela(t.lexema);
                 if (!(posicao != -1)) error("Identificador de matriz/vetor,nao encontrado");
-                if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro");
+                if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro ou constante inteira");
                 tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;
                 t.processado = true;
                 t = analex();
@@ -334,7 +334,7 @@ void Func_CMD(){
             t.processado = true;
             t = analex();
 
-            if((t.cat == SN && t.codigo == FECHA_PAR)) break; //verificar ainda se faz sentido
+            if((t.cat == SN && t.codigo == FECHA_PAR)) break;
             
             Func_Expr();
 

@@ -149,7 +149,9 @@ void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria ca
     } else {
         strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
         tabela_simbolos[TOPO].escopo = escopo;
-        tabela_simbolos[TOPO].categoria = categoria;
+        // tabela_simbolos[TOPO].categoria = categoria;
+        //pequena mudança
+        Insere_Tabela_decl_var_escalar(TOPO, N_A_Tipo,  categoria,  N_A_Array,  NAO);
 
         Imprimi_Tabela();
         tabela_simbolos[TOPO].endereco = TOPO;
