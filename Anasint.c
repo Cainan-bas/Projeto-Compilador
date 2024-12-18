@@ -333,6 +333,8 @@ void Func_CMD(){
         do{
             t.processado = true;
             t = analex();
+
+            if((t.cat == SN && t.codigo == FECHA_PAR)) break; //verificar ainda se faz sentido
             
             Func_Expr();
 
@@ -471,7 +473,6 @@ void Func_CMD(){
     } else if (t.cat == PR && t.codigo == PUTSTR){
         t.processado = true;
         t = analex();
-        printError(t);
         if(t.cat == ID || t.cat == CT_STR){
             t.processado = true;
             t = analex();

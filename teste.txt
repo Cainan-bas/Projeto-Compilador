@@ -1,45 +1,80 @@
-
 int index = 0
-const int maxTamTarefas = 1024, maxLetters = 32
-char tarefas[maxTamTarefas][maxTamTarefas]
+const int MAX_TAM_TAREFAS = 1024, MAX_LETTERS = 32
+char tarefas[MAX_TAM_TAREFAS][MAX_TAM_TAREFAS]
 
-
+prot criarTarefa()
+prot removerUltimaTarefa()
 prot adicionarTarefa(char[])
 prot listarTarefas()
+prot removerTodasTarefas()
 
-def adicionarTarefa(char t[maxLetters])
-
+def adicionarTarefa(char t[MAX_LETTERS])
     tarefas[index] = t
     index = index + 1
 endp
 
-
 def listarTarefas()
     int index = 0
     while(1)
-    if(tarefas[index] == 'a') 
+    if(tarefas[index] == ' ') 
         getout
     endi
-    putchar tarefas
+    putstr tarefas
     index = index + 1
     endw
 endp
 
-def init
-    char tarefa[maxLetters]
-    while(1)
+def criarTarefa()
+        char tarefa[MAX_LETTERS]
+        if(index > MAX_TAM_TAREFAS)
+            putstr "Quantidade maxima de tarefas"
+            putchar '\n'
+            getout
+        endi
+
         putstr "Digite 0 para sair"
         putchar '\n'
         putstr "Diga a tarefa"
         getstr tarefa
-    
         if(tarefa == ' ')
             putstr "A tarefa não deve ser vazia"
         elif(tarefa == 0) 
             getout
         endi
         do adicionarTarefa(tarefa)
-    endw
+    putstr "Tarefa criada com sucesso"
+endp
 
-    do listarTarefas()
+def removerUltimaTarefa()
+    index = index - 1
+    putstr "Ultima tarefa removida"
+endp
+
+def removerTodasTarefas()
+    index = 0
+    putstr "Todas as tarefas foram removidas"
+endp
+
+def init
+    int opcao
+    while(1)
+      
+      putstr "O que deseja fazer?"
+      putstr "1 - Criar Tarefa"
+      putchar '\n'
+      putstr "2 - Deletar ultima tarefa"
+      putchar '\n'
+      putstr "3 - Listar Tarefas"
+      putstr "4 - Sair"
+      
+      getint opcao
+
+      if(opcao == 1) do criarTarefa()
+      elif(opcao == 2) do removerUltimaTarefa()
+      elif(opcao == 3) do listarTarefas()
+      elif(opcao == 4) getout
+      else putstr "Opcao invalida"
+      endi
+
+   endw
 endp
