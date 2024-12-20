@@ -1,4 +1,5 @@
 #include "Analex.h"
+#include <stdarg.h>
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -7,8 +8,6 @@
 
 #define TAM_LEXEMA 50
 #define TAM_NUM 20
-
-// int contLinha = 1;
 
 char palavras_reservadas[NUM_PALAVRAS_RESERVADAS][20] = {
     "const", "prot","def",     "init",    "endp",     "char",   "int",     "real",
@@ -26,7 +25,7 @@ int comparaPalavraReservada(char *palavra) {
 }
 
 void error(char msg[]) {
-  printf("%s\n", msg);
+  printf("LINHA %d -> %s\n", contLinha+1 ,msg);
   exit(1);
 }
 
@@ -133,13 +132,11 @@ TOKEN Analex(FILE *fd) {
       } else if (c == '\n') {
         estado = 0;
         t.cat = FIM_EXPR;
-        contLinha++;
         return t;
       } else if (c == EOF) {
         t.cat = FIM_ARQ;
         return t;
       } else {
-        // error("Caracter invalido na expressao!");
         t.cat = ERRO;
         return t;
       }
@@ -582,13 +579,9 @@ void Print_Analex(TOKEN tk) {
       break;
     case ERRO:
       printf("<ERRO> #LINHA COM EXPRESSAO INVALIDA#");
-      //t.codigo = FIM_EXPR;
-      // printf("\nLINHA %d: ", ++contLinha);
-      ++contLinha;
       printf("\n");
       break;
     case FIM_EXPR:
-      // printf("\nLINHA %d: ", ++contLinha);
       ++contLinha;
       printf("\n");
       break;

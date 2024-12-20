@@ -1,4 +1,5 @@
 @echo off
+cls
 gcc .\*.c -o t
 .\t.exe
 ::pause

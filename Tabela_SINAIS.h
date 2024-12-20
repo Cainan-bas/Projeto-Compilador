@@ -85,10 +85,11 @@ typedef struct {
 // Variaveis Globais
 extern SIMBOLO tabela_simbolos[TAM_MAX_TABELA];
 extern int TOPO;
+extern int contLinha;
 
 // Funcoes
 int Insere_Tabela(const char*, Escopo);
-int Consulta_Tabela(const char*);
+int Consulta_Tabela(const char*, int);
 void Insere_Tabela_decl_var_escalar(int, Tipo, Categoria, Array, EhConst);
 void Insere_Valor(int , TOKEN , int , int []);
 void Insere_Tabela_simb_decl_var_array(int, Tipo, Categoria, int, int[], EhConst);

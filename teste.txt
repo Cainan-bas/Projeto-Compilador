@@ -1,6 +1,7 @@
-int index = 0
-const int MAX_TAM_TAREFAS = 1024, MAX_LETTERS = 32
-char tarefas[MAX_TAM_TAREFAS][MAX_TAM_TAREFAS]
+int index = 0, collumns = 0
+int index = 19
+const int MAX_TAM_TAREFAS = 1024, MAX_LETTERS = 32, MAX_ROWS = 4
+char tarefas[MAX_TAM_TAREFAS][MAX_LETTERS]
 
 prot criarTarefa()
 prot removerUltimaTarefa()
@@ -14,34 +15,40 @@ def adicionarTarefa(char t[MAX_LETTERS])
 endp
 
 def listarTarefas()
-    int index = 0
-    while(1)
-    if(tarefas[index] == ' ') 
+    int i = 0
+    char tarefa[MAX_LETTERS]
+    while(i < MAX_TAM_TAREFAS)
+    if(tarefas[index][0] == ' ') 
         getout
     endi
+    tarefa = tarefas[i]
     putstr tarefas
-    index = index + 1
+    i = i + 1
     endw
 endp
 
 def criarTarefa()
         char tarefa[MAX_LETTERS]
+        char dias, prioridade
         if(index > MAX_TAM_TAREFAS)
             putstr "Quantidade maxima de tarefas"
             putchar '\n'
             getout
         endi
-
+    while(1)
         putstr "Digite 0 para sair"
         putchar '\n'
-        putstr "Diga a tarefa"
+        putstr "Diga o nome da tarefa"
         getstr tarefa
         if(tarefa == ' ')
             putstr "A tarefa não deve ser vazia"
         elif(tarefa == 0) 
             getout
+        else
+            do adicionarTarefa(tarefa, dias, prioridade)
+            getout
         endi
-        do adicionarTarefa(tarefa)
+    endw
     putstr "Tarefa criada com sucesso"
 endp
 
@@ -65,6 +72,7 @@ def init
       putstr "2 - Deletar ultima tarefa"
       putchar '\n'
       putstr "3 - Listar Tarefas"
+      putchar '\n'
       putstr "4 - Sair"
       
       getint opcao

@@ -9,7 +9,6 @@
 /* Variaveis globais */
 TOKEN t;
 FILE *fd;
-int contLinha;
 
 // variaveis da tabela
 int escopo_atual;
@@ -21,7 +20,7 @@ int tam_dims[MAX_ARRAY_DIM];
 TOKEN analex(){
     do{
         t = Analex(fd);
-        Print_Analex(t);
+        //Print_Analex(t);
         if(t.cat == ERRO) error("Erro lexico encontrado");
     }while(t.cat == FIM_EXPR);
     return t;
@@ -103,7 +102,7 @@ void Decl_var(){
                 t.processado = true;
                 t = analex();
             } else if (t.cat == ID){
-                posicao = Consulta_Tabela(t.lexema);
+                posicao = Consulta_Tabela(t.lexema, 0);
                 if (!(posicao != -1)) error("Identificador de matriz/vetor,nao encontrado");
                 if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro ou constante inteira");
                 tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;
@@ -230,7 +229,7 @@ void Decl_def_prot(){
             Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
             nomeID = t;
             escopo_atual = LCL;
-            topoLocal = Consulta_Tabela(t.lexema);
+            topoLocal = Consulta_Tabela(t.lexema, 0);
             t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
         
@@ -277,7 +276,7 @@ void Decl_def_prot(){
                         t.processado = true;
                         t = analex();
                     } else if (t.cat == ID){
-                        posicao = Consulta_Tabela(t.lexema);
+                        posicao = Consulta_Tabela(t.lexema, 0);
                         if (!(posicao != -1)) error("Identificador de matriz/vetor,nao encontrado");
                         if(!(tabela_simbolos[posicao].tipo == INT_Tipo && tabela_simbolos[posicao].eh_const == SIM)) error("parametro de array/matriz diferente de inteiro");
                         tam_dims[cont_dim - 1] = tabela_simbolos[posicao].valor_const.valor_int;

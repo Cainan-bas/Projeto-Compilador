@@ -14,6 +14,8 @@ const char* escopoToString(Escopo escopo){
     {
     case GLB: return "Externo";
     case LCL: return "Interno";
+    // case GLB: return "GLB";
+    // case LCL: return "LCL";
     default: return "UNKN";
     }
 }
@@ -28,8 +30,8 @@ const char* tipoToString(Tipo tipo) {
 }
 const char* categoriaToString(Categoria categoria) {
     switch (categoria) {
-        case GLOBAL: return "GLOBAL";
-        case LOCAL: return "LOCAL";
+        case GLOBAL: return "VA_GLOBAL";
+        case LOCAL: return "VA_LOCAL";
         case PROCED: return "PROCED";
         case PARAMETRO: return "PARAMETRO";
         case PROTOTIPO: return "PROTOTIPO";
@@ -64,8 +66,8 @@ const char* ehConstToString(EhConst eh_const) {
 }
 
 
-int Consulta_Tabela(const char *lexema) {
-    for (int i = 0; i < TOPO; i++) {
+int Consulta_Tabela(const char *lexema, int num) {
+    for (int i = num; i < TOPO; i++) {
         if (strcmp(tabela_simbolos[i].lexema, lexema) == 0) {
             return i;
         }
@@ -74,11 +76,18 @@ int Consulta_Tabela(const char *lexema) {
 }
 
 int Insere_Tabela(const char *lexema, Escopo escopo) {
+    int posicaoLocal = 0;
     // melhorar essa consulta na tabela, talvez colocar por token
-    // if (Consulta_Tabela(lexema) != -1) {
-    //     printf("Erro: Símbolo '%s' já declarado.\n", lexema);
-    //     return -1;
-    // }
+    posicaoLocal = Consulta_Tabela(lexema, 0);
+    if (posicaoLocal != -1) {
+        if(tabela_simbolos[posicaoLocal].categoria != GLOBAL) error("Redeclaracao de variavel LOCAL");
+        posicaoLocal = Consulta_Tabela(lexema, posicaoLocal);
+        if(posicaoLocal != -1){
+            if(tabela_simbolos[posicaoLocal].categoria == GLOBAL) error("Redeclaracao de variavel GLOBAL");
+            // printf("Erro: Símbolo '%s' já declarado.\n", lexema);
+            // return -1;
+        }
+    }
 
     strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[TOPO].escopo = escopo;
@@ -143,8 +152,8 @@ void Insere_Tabela_simb_decl_var_array(int k, Tipo tipo, Categoria categoria, in
 
 void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria categoria) {
     
-    if (Consulta_Tabela(lexema) != -1) {
-        tabela_simbolos[Consulta_Tabela(lexema)].categoria = categoria;
+    if (Consulta_Tabela(lexema, 0) != -1) {
+        tabela_simbolos[Consulta_Tabela(lexema, 0)].categoria = categoria;
         Imprimi_Tabela();
     } else {
         strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
@@ -220,7 +229,7 @@ void Remove_Tabela(){
 }
 
 void TornarVivo(TOKEN nomeDef){
-    int posicao = Consulta_Tabela(nomeDef.lexema);
+    int posicao = Consulta_Tabela(nomeDef.lexema, 0);
     while(posicao <= TOPO){
         posicao+=1;
         if (tabela_simbolos[posicao].categoria != PARAMETRO) break;
@@ -230,7 +239,7 @@ void TornarVivo(TOKEN nomeDef){
 }
 
 void TornarZumbi(TOKEN nomeDef){
-    int posicao = Consulta_Tabela(nomeDef.lexema);
+    int posicao = Consulta_Tabela(nomeDef.lexema, 0);
     while(posicao <= TOPO){
         posicao+=1;
         if (tabela_simbolos[posicao].categoria != PARAMETRO) break;

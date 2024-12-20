@@ -3,13 +3,6 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-// #include <locale.h>
-
-// // Lidar com acentos
-// __attribute__((constructor))
-// static void configure_locale() {
-//     setlocale(LC_ALL, "pt_BR.UTF-8");
-// }
 
 #define TAM_MAX_LEXEMA 31
 #define NUM_PALAVRAS_RESERVADAS 31
@@ -105,7 +98,7 @@ typedef struct {
 /* Variaveis globais */
 extern TOKEN t;
 extern FILE *fd;
-extern int contLinha;  // Contador de linhas do código fonte 
+extern int contLinha;  
 
 /* Assinaturas de funcoes */
 TOKEN Analex(FILE *);

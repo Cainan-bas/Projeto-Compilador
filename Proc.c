@@ -38,7 +38,6 @@ void TestaAnalex(){
 }
 
 void TestaAnasint() {
-    
     if ((fd=fopen("teste.txt", "r")) == NULL)
         error("Arquivo de entrada da expressão nao encontrado!");
     
