@@ -155,7 +155,9 @@ void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria ca
     posicaoLocal = Consulta_Tabela(lexema, 0);
 
     if (posicaoLocal != -1) {
-        if(tabela_simbolos[posicaoLocal].categoria != PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
+        // if(tabela_simbolos[posicaoLocal].categoria != PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
+        if(categoria == PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
+        if(categoria == tabela_simbolos[posicaoLocal].categoria) error("Redeclaracao de procedimento");
         tabela_simbolos[posicaoLocal].categoria = categoria;
         Imprimi_Tabela();
     } else {

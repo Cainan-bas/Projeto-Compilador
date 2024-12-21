@@ -15,8 +15,7 @@
 // // }
  
 // int main(){
-
-//     criarNome2();
-
+//     int a = 0;
+//     printf("a");
 //     return 0;
 // }

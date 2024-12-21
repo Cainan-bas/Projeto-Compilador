@@ -2,6 +2,7 @@
 int a,b
 
 prot subtrair(&int [][], int, int)
+prot kaik()
 
 // asdhasjkdhk
 

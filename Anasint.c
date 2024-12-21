@@ -326,7 +326,9 @@ void Func_CMD(){
         t = analex();
         if(t.cat != ID) error("Identificador esperado"); //testa id
         t.processado = true;
-        if(Consulta_Tabela(t.lexema, 0) == -1 || tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROCED) error("PROT/PROC nao declarado anteriormente");
+        // ajeitar esse if que esta incorreto
+        if(Consulta_Tabela(t.lexema, 0) == -1 || (tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROT && tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROCED)) error("PROT/PROC nao declarado anteriormente");
+        // if(Consulta_Tabela(t.lexema, 0) == -1 ) error("PROT/PROC nao declarados");
         t = analex();
 
         if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("CMD -> DO inválida, falta abre parenteses");
@@ -486,6 +488,8 @@ void Func_CMD(){
         }else{
             error("CMD -> PUTSTR, Identificador esperado ou const string");
         }
+    } else {
+        error("CMD ou Declaracao de variavel incorreta");
     }
 }
 
