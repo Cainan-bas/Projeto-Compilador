@@ -1,5 +1,7 @@
 @echo off
 cls
+::gcc .\*.c -Wall
+::pause
 gcc .\*.c -o t
 .\t.exe
 ::pause

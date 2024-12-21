@@ -20,7 +20,7 @@ int tam_dims[MAX_ARRAY_DIM];
 TOKEN analex(){
     do{
         t = Analex(fd);
-        //Print_Analex(t);
+        // Print_Analex(t);
         if(t.cat == ERRO) error("Erro lexico encontrado");
     }while(t.cat == FIM_EXPR);
     return t;
@@ -326,6 +326,7 @@ void Func_CMD(){
         t = analex();
         if(t.cat != ID) error("Identificador esperado"); //testa id
         t.processado = true;
+        if(Consulta_Tabela(t.lexema, 0) == -1 || tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROCED) error("PROT/PROC nao declarado anteriormente");
         t = analex();
 
         if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("CMD -> DO inválida, falta abre parenteses");
@@ -363,6 +364,7 @@ void Func_CMD(){
         t = analex();
         if(t.cat != ID) error("Identificador esperado"); //testa id
         t.processado = true;
+        if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
         t = analex();
         if(!(t.cat == PR && t.codigo == FROM)) error("CMD -> VAR inválida, falta PR FROM");
         t.processado = true;
@@ -370,7 +372,7 @@ void Func_CMD(){
         
         Func_Expr();
 
-        if(!(t.cat == PR && t.codigo == TO || t.codigo == DT)) error("CMD -> VAR inválida, falta PR (TO||DT)");
+        if(!(t.cat == PR && (t.codigo == TO || t.codigo == DT))) error("CMD -> VAR inválida, falta PR (TO||DT)");
         t.processado = true;
         t = analex();
 
@@ -384,6 +386,7 @@ void Func_CMD(){
                 t = analex();
             } else if (t.cat == ID){
                 t.processado = true;
+                if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
                 t = analex();
             } else {
                 error ("CMD -> VAR inválida, falta PR BY ou constante inteira ou id");
@@ -441,12 +444,14 @@ void Func_CMD(){
         t = analex();
         if(t.cat != ID) error("CMD -> GETS, Identificador esperado"); //testa id
         t.processado = true;
+        if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
         t = analex();
     } else if (t.cat == PR && t.codigo == PUTINT){
         t.processado = true;
         t = analex();
         if(t.cat == ID || t.cat == CT_I){
             t.processado = true;
+            if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
             t = analex();
         }else{
             error("CMD -> PUTINT, Identificador esperado ou const inteira");
@@ -456,6 +461,7 @@ void Func_CMD(){
         t = analex();
         if(t.cat == ID || t.cat == CT_R){
             t.processado = true;
+            if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
             t = analex();
         }else{
             error("CMD -> PUTREAL, Identificador esperado ou const inteira");
@@ -465,6 +471,7 @@ void Func_CMD(){
         t = analex();
         if(t.cat == ID || t.cat == CT_C){
             t.processado = true;
+            if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
             t = analex();
         }else{
             error("CMD -> PUTCHAR, Identificador esperado ou const inteira");
@@ -474,6 +481,7 @@ void Func_CMD(){
         t = analex();
         if(t.cat == ID || t.cat == CT_STR){
             t.processado = true;
+            if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
             t = analex();
         }else{
             error("CMD -> PUTSTR, Identificador esperado ou const string");
@@ -482,11 +490,12 @@ void Func_CMD(){
 }
 
 void Func_Atrib(){
-    if(t.cat != ID) error("Identificador esperado"); //testa id
+    if(t.cat != ID) error("Identificador esperado"); 
     t.processado = true;
+    if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
     t = analex();
 
-    while((t.cat == SN) && (t.codigo == ABRE_COL)){ // testar para vetor e matriz
+    while((t.cat == SN) && (t.codigo == ABRE_COL)){ 
         t.processado = true;
         t = analex();
 
@@ -553,6 +562,7 @@ void Func_Termo(){
 void Func_Fator(){
     if(t.cat == ID){
         t.processado = true;
+        if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
         t = analex();
 
         while((t.cat == SN) && (t.codigo == ABRE_COL)){

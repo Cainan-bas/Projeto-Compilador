@@ -151,9 +151,12 @@ void Insere_Tabela_simb_decl_var_array(int k, Tipo tipo, Categoria categoria, in
 }
 
 void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria categoria) {
-    
-    if (Consulta_Tabela(lexema, 0) != -1) {
-        tabela_simbolos[Consulta_Tabela(lexema, 0)].categoria = categoria;
+    int posicaoLocal = 0;
+    posicaoLocal = Consulta_Tabela(lexema, 0);
+
+    if (posicaoLocal != -1) {
+        if(tabela_simbolos[posicaoLocal].categoria != PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
+        tabela_simbolos[posicaoLocal].categoria = categoria;
         Imprimi_Tabela();
     } else {
         strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
@@ -279,7 +282,7 @@ void Imprimi_Tabela() {
                 printf("%-8.2f │ ", sim.valor_const.valor_real);
                 break;
             case CHAR_Tipo:
-                printf("%-9c │ ", sim.valor_const.valor_char);
+                printf("%-9s │ ", sim.valor_const.valor_char);
                 break;
             case BOOL_Tipo:
                 printf("%-9s │ ", sim.valor_const.valor_bool ? "true" : "false");

@@ -3,6 +3,8 @@ int a,b
 
 prot subtrair(&int [][], int, int)
 
+// asdhasjkdhk
+
 def somar(int r, int a, int b) 
     int z
     z = a + b

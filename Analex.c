@@ -25,7 +25,7 @@ int comparaPalavraReservada(char *palavra) {
 }
 
 void error(char msg[]) {
-  printf("LINHA %d -> %s\n", contLinha+1 ,msg);
+  printf("LINHA %d -> %s\n", contLinha ,msg);
   exit(1);
 }
 
@@ -44,7 +44,7 @@ TOKEN Analex(FILE *fd) {
     case 0:
       if (c == ' ' || c == '\t') {
         estado = 0;
-      } else if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+      } else if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) {
         estado = 1;
         lexema[tamL] = c;
         lexema[++tamL] = '\0';
@@ -132,6 +132,7 @@ TOKEN Analex(FILE *fd) {
       } else if (c == '\n') {
         estado = 0;
         t.cat = FIM_EXPR;
+        ++contLinha;
         return t;
       } else if (c == EOF) {
         t.cat = FIM_ARQ;
@@ -273,6 +274,7 @@ TOKEN Analex(FILE *fd) {
       if (!(c == '\n')) {
         estado = 18;
       } else {
+        contLinha++;
         estado = 0;
       }
       break;
@@ -582,7 +584,7 @@ void Print_Analex(TOKEN tk) {
       printf("\n");
       break;
     case FIM_EXPR:
-      ++contLinha;
+      // contLinha++;
       printf("\n");
       break;
     case FIM_ARQ:
