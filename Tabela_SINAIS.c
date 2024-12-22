@@ -174,6 +174,39 @@ void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria ca
     // return TOPO-1;
 }
 
+void Verifica_Tabela_parametro(int k, Escopo escopo, Tipo tipo, Categoria categoria, Passagem passagem, int cont_dim){
+
+    if(tabela_simbolos[k].passagem != passagem) error("Parametro com passagem invalita");
+    if(tabela_simbolos[k].tipo != tipo) error("Parametro com tipo invalido");
+    if(cont_dim == 0){
+        if(tabela_simbolos[k].array != SIMPLES) error("Parametro com array de tamanho invalido");
+    } else if (cont_dim == 1){
+        if(tabela_simbolos[k].array != VETOR) error("Parametro com array de tamanho invalido");
+    } else if (cont_dim == 2){
+        if(tabela_simbolos[k].array != MATRIZ) error("Parametro com array de tamanho invalido");
+    } else{
+        error("Mais colchetes que o permitido");
+    }
+}
+
+void Veri_Quant_param_maior(int topoLocal, int tamanPara){
+    int quantMax = 0;
+    while (tabela_simbolos[topoLocal+1].categoria == PARAMETRO){
+        quantMax++;
+        topoLocal++;
+    }
+    if(tamanPara > quantMax) error("Mais parametros na declaracao do PROC do que no PROT"); 
+}
+
+void Veri_Quant_param_menor(int topoLocal, int tamanPara){
+     int quantMax = 0;
+    while (tabela_simbolos[topoLocal+1].categoria == PARAMETRO){
+        quantMax++;
+        topoLocal++;
+    }
+    if(tamanPara < quantMax) error("Falta parametros na declaracao do PROC do que no PROT");
+}
+
 void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Passagem passagem, int cont_dim) {
 
     tabela_simbolos[TOPO].escopo = escopo;
@@ -193,30 +226,16 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
     Imprimi_Tabela();
     
     TOPO++;
-    // return TOPO-1;
 }
 
-// int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
-// // void Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
-//     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
-//     tabela_simbolos[topoLocal].zumbi = ZUMBI;
-//     if(tabela_simbolos[topoLocal+1].categoria != PARAMETRO){
-//         Imprimi_Tabela();
-//         return -1;
-//         // return TOPO;
-//     }
-//     Imprimi_Tabela();
-//     return topoLocal;
-// }
 
 int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
-// void Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
+    
     strncpy(tabela_simbolos[topoLocal].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[topoLocal].zumbi = ZUMBI;
     if(tabela_simbolos[topoLocal].categoria == PARAMETRO){
         Imprimi_Tabela();
         return topoLocal;
-        // return TOPO;
     }
     Imprimi_Tabela();
     return -1;

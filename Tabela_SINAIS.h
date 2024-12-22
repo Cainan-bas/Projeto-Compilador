@@ -96,6 +96,10 @@ void Insere_Tabela_simb_decl_var_array(int, Tipo, Categoria, int, int[], EhConst
 void Insere_Tabela_decl_def_prot(const char *, Escopo, Categoria);
 void Insere_Tabela_parametro(Escopo, Tipo, Categoria, Passagem, int);
 
+void Verifica_Tabela_parametro(int, Escopo, Tipo, Categoria, Passagem, int);
+void Veri_Quant_param_maior(int , int );
+void Veri_Quant_param_menor(int, int);
+
 int Insere_Tabela_parametro_procedimento(const char*, int);
 
 void Remove_Tabela();

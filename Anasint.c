@@ -162,6 +162,7 @@ void Decl_def_prot(){
     int protLocal;
     int passagemLocal;
     int topoLocal;
+    int tamanPara = 0;
 
     if(t.cat == PR && t.codigo == PROT){
         t.processado = true;
@@ -206,6 +207,7 @@ void Decl_def_prot(){
                 t = analex(); 
             }
             Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+
             cont_dim = 0;
         }while(t.cat == SN && t.codigo == VIRGULA);
 
@@ -220,19 +222,23 @@ void Decl_def_prot(){
 
         if((t.cat == PR && t.codigo == INIT)){
             t.processado = true;
-            Insere_Tabela_decl_def_prot("init", escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            Insere_Tabela_decl_def_prot("init", escopo_atual, PROCED);
             escopo_atual = LCL;
             t = analex();
         }
         else if(t.cat == ID ){
             t.processado = true;
-            Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            // Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
+            Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, PROCED);
             nomeID = t;
             escopo_atual = LCL;
+
             topoLocal = Consulta_Tabela(t.lexema, 0);
+            if(topoLocal+1 == TOPO) topoLocal=-1; //forca topolocal a ser igual -1 para nao entrar na primeira vez no if de PROT
+            
             t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
-        
+
             do{
                 t.processado = true;
                 t = analex();
@@ -253,15 +259,20 @@ void Decl_def_prot(){
                 tipo = t.codigo;
                 t = analex();
 
-                if(t.cat != ID ) error("Identificador esperado"); //testa id
+                if(t.cat != ID ) error("Identificador esperado"); 
                 t.processado = true;
+                
+                tamanPara++;
+
                 if(topoLocal != -1){
                     topoLocal += 1;
+                    Veri_Quant_param_maior(Consulta_Tabela(nomeID.lexema, 0), tamanPara);
                     topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal);
                 } else {
                     topoLocal = TOPO;
                     topoLocal = Insere_Tabela_parametro_procedimento(t.lexema, topoLocal);
                 }
+
                 t = analex();
 
                 int posicao;
@@ -288,14 +299,21 @@ void Decl_def_prot(){
 
                     if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
                     t.processado = true;
-                    Insere_Valor(topoLocal, t, cont_dim, tam_dims);
+                    // Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
                 // problematico esse if
-                if(topoLocal == -1){ Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
 
-                }cont_dim = 0;
+                if(topoLocal == -1){ 
+                    Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
+                }else{
+                    Verifica_Tabela_parametro(topoLocal, escopo_atual,tipo, PARAMETRO, passagemLocal, cont_dim);
+                }
+                
+                cont_dim = 0;
             }while(t.cat == SN && t.codigo == VIRGULA);
+
+            Veri_Quant_param_menor(Consulta_Tabela(nomeID.lexema, 0), tamanPara);
 
             if(!(t.cat == SN && t.codigo == FECHA_PAR)) error("Incialização de prot inválida, falta parenteses");
             t.processado = true;

@@ -1,5 +1,5 @@
 
-int a,b
+const int a,b,c
 
 prot subtrair(&int [][], int, int)
 prot kaik()
