@@ -79,7 +79,6 @@ void Decl_list_var(){
     }
 }
 
-//void Decl_var(int tipo, bool testa_const){
 void Decl_var(){
     int topoLocal;
     int posicao;
@@ -126,8 +125,6 @@ void Decl_var(){
         t.processado = true;
         t = analex();
         if(testa_array){
-            // t.processado = true;
-            // t = analex();
             if(!(t.cat == SN && t.codigo == ABRE_CHAVES)) error("Incialização de array inválida");
             t.processado = true;
             t = analex();
@@ -147,6 +144,7 @@ void Decl_var(){
                 }
             }
         } else {
+            if(t.cat == SN && t.codigo == ABRE_CHAVES) error("Chaves na declaracao de variavel escalar");
             Insere_Valor(topoLocal, t,0,0);
             t.processado = true;
             t = analex();
@@ -167,8 +165,9 @@ void Decl_def_prot(){
     if(t.cat == PR && t.codigo == PROT){
         t.processado = true;
         protLocal = t.codigo;
-        t = analex();
+        t = analex();   
         
+        if(t.cat == PR && t.codigo == INIT) error("INIT nao possue PROT");
         if(t.cat != ID) error("Identificador esperado"); //testa idprot
         t.processado = true;
         Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, (protLocal == PROT ? PROTOTIPO : PROCED));
@@ -260,6 +259,7 @@ void Decl_def_prot(){
                 t = analex();
 
                 if(t.cat != ID ) error("Identificador esperado"); 
+                if(Consulta_Tabela(t.lexema, topoLocal-tamanPara) != -1)error("Parametro como ID repetido");
                 t.processado = true;
                 
                 tamanPara++;

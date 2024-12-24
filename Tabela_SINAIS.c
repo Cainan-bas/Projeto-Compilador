@@ -130,6 +130,8 @@ void Insere_Valor(int k, TOKEN valor, int cont_dim, int tam_dims[]){
             strcpy(tabela_simbolos[k].valor_const.valor_char, valor.lexema);
         } else if (valor.cat == CT_I && tabela_simbolos[k].tipo == BOOL_Tipo){
             tabela_simbolos[k].valor_const.valor_bool = (valor.valInt == 0 ? 0 : 1);
+        } else {
+            error("Atribuicao de tipo invalida");
         }
     }
 }
