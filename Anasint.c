@@ -9,6 +9,7 @@
 /* Variaveis globais */
 TOKEN t;
 FILE *fd;
+TOKEN aux;
 
 // variaveis da tabela
 int escopo_atual;
@@ -53,8 +54,6 @@ void Prog() {
 }
 
 void Decl_list_var(){
-    // bool testa_const;
-    // int tipo;
 
     testa_const = ((t.cat == PR) && (t.codigo == CONST)); //testa o const
 
@@ -145,7 +144,8 @@ void Decl_var(){
             }
         } else {
             if(t.cat == SN && t.codigo == ABRE_CHAVES) error("Chaves na declaracao de variavel escalar");
-            Insere_Valor(topoLocal, t,0,0);
+            if(testa_const) Insere_Valor(topoLocal, t,0,0); //depois verificar como atribuir os valores nos parametros array
+            if(Veri_Tipo(topoLocal, t) == -1) error("Tipos incompativeis");
             t.processado = true;
             t = analex();
         }
@@ -299,7 +299,7 @@ void Decl_def_prot(){
 
                     if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
                     t.processado = true;
-                    // Insere_Valor(topoLocal, t, cont_dim, tam_dims);
+                    Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
                 // problematico esse if
@@ -512,9 +512,12 @@ void Func_CMD(){
 }
 
 void Func_Atrib(){
+    TOKEN tokenRecebe;
+
     if(t.cat != ID) error("Identificador esperado"); 
     t.processado = true;
     if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+    tokenRecebe = t;
     t = analex();
 
     while((t.cat == SN) && (t.codigo == ABRE_COL)){ 
@@ -528,18 +531,18 @@ void Func_Atrib(){
         t = analex(); 
         
     }
-    if (!(t.cat == SN && t.codigo == ATRIBUICAO)){ 
-        error("Sinal de igual esperado");}
+    if (!(t.cat == SN && t.codigo == ATRIBUICAO)) error("Sinal de igual esperado");
     t.processado = true;
     t = analex();
+
+    //mechendo nessa parte
+    //if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
 
     Func_Expr();
 }
 
 void Func_Expr(){
     Func_ExprSimples();
-    // t.processado = true;
-    // t =analex();
 
     if (t.cat == SN && (t.codigo == IGUALDADE || t.codigo == DIFERENTE || t.codigo == MENOR || t.codigo == MENOR_IGUAL ||
         t.codigo == MAIOR || t.codigo == MAIOR_IGUAL)){
@@ -556,16 +559,12 @@ void Func_ExprSimples(){
     }
 
     Func_Termo();
-    // t.processado = true;
-    // t =analex();
 
     while (t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO || t.codigo == COND_ALTERNATIVA)){
         t.processado = true;
         t = analex();
 
         Func_Termo();
-        // t.processado = true;
-        // t = analex();
     }   
 }
 
@@ -603,6 +602,9 @@ void Func_Fator(){
     } else if (t.cat == SN && t.codigo == ABRE_PAR){
         t.processado = true;
         t = analex();
+
+
+
 
         Func_Expr();
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("Fecha parentese esperado");
