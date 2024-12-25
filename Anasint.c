@@ -512,9 +512,12 @@ void Func_CMD(){
 }
 
 void Func_Atrib(){
+    TOKEN tokenRecebe;
+
     if(t.cat != ID) error("Identificador esperado"); 
     t.processado = true;
     if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+    tokenRecebe = t;
     t = analex();
 
     while((t.cat == SN) && (t.codigo == ABRE_COL)){ 
@@ -528,18 +531,17 @@ void Func_Atrib(){
         t = analex(); 
         
     }
-    if (!(t.cat == SN && t.codigo == ATRIBUICAO)){ 
-        error("Sinal de igual esperado");}
+    if (!(t.cat == SN && t.codigo == ATRIBUICAO))error("Sinal de igual esperado");
     t.processado = true;
     t = analex();
 
+    //mechendo nessa parte
+    if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
     Func_Expr();
 }
 
 void Func_Expr(){
     Func_ExprSimples();
-    // t.processado = true;
-    // t =analex();
 
     if (t.cat == SN && (t.codigo == IGUALDADE || t.codigo == DIFERENTE || t.codigo == MENOR || t.codigo == MENOR_IGUAL ||
         t.codigo == MAIOR || t.codigo == MAIOR_IGUAL)){
@@ -556,16 +558,12 @@ void Func_ExprSimples(){
     }
 
     Func_Termo();
-    // t.processado = true;
-    // t =analex();
 
     while (t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO || t.codigo == COND_ALTERNATIVA)){
         t.processado = true;
         t = analex();
 
         Func_Termo();
-        // t.processado = true;
-        // t = analex();
     }   
 }
 

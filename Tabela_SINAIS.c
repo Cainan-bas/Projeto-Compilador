@@ -66,10 +66,27 @@ const char* ehConstToString(EhConst eh_const) {
 }
 
 
+// int Consulta_Tabela(const char *lexema, int num) {
+//     for (int i = num; i < TOPO; i++) {
+//         if (strcmp(tabela_simbolos[i].lexema, lexema) == 0) {
+//             return i;
+//         }
+//     }
+//     return -1;
+// }
+
 int Consulta_Tabela(const char *lexema, int num) {
-    for (int i = num; i < TOPO; i++) {
-        if (strcmp(tabela_simbolos[i].lexema, lexema) == 0) {
-            return i;
+    if(num >= 0){
+        for (int i = num; i < TOPO; i++) {
+            if (strcmp(tabela_simbolos[i].lexema, lexema) == 0) {
+                return i;
+            }
+        }
+    } else {
+        for (int i = TOPO-1; i >= 0; i--) {
+            if (strcmp(tabela_simbolos[i].lexema, lexema) == 0) {
+                return i;
+            }
         }
     }
     return -1;
