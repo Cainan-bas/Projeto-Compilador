@@ -1,4 +1,5 @@
 int index = 0, collumns = 0
+
 const int MAX_TAM_TAREFAS = 1024, MAX_LETTERS = 32, MAX_ROWS = 4
 char tarefas[MAX_TAM_TAREFAS][MAX_LETTERS]
 
@@ -9,7 +10,7 @@ prot listarTarefas()
 prot removerTodasTarefas()
 
 def listarTarefas()
-    int i = 0
+    int i = 10
     char tarefa[MAX_LETTERS]
     while(i < MAX_TAM_TAREFAS)
     if(tarefas[index][0] == ' ') 

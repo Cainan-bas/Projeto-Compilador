@@ -139,11 +139,13 @@ void Insere_Valor(int k, TOKEN valor, int cont_dim, int tam_dims[]){
         tabela_simbolos[k].dim2 = (cont_dim == 2) ? tam_dims[1] : 0;
     }else{
         // Insere valor const
-        if(valor.cat == CT_I && tabela_simbolos[k].tipo == INT_Tipo){
+        // if(valor.cat == CT_I && tabela_simbolos[k].tipo == INT_Tipo){
+        if(valor.cat == CT_I && (tabela_simbolos[k].tipo == INT_Tipo || tabela_simbolos[k].tipo == CHAR_Tipo)){
             tabela_simbolos[k].valor_const.valor_int = valor.valInt;    
         } else if (valor.cat == CT_R && tabela_simbolos[k].tipo == REAL_Tipo){
             tabela_simbolos[k].valor_const.valor_real = valor.valFloat;
-        } else if (valor.cat == CT_C && tabela_simbolos[k].tipo == CHAR_Tipo){
+        // } else if (valor.cat == CT_C && tabela_simbolos[k].tipo == CHAR_Tipo){
+        } else if (valor.cat == CT_C && (tabela_simbolos[k].tipo == CHAR_Tipo || tabela_simbolos[k].tipo == INT_Tipo)){
             strcpy(tabela_simbolos[k].valor_const.valor_char, valor.lexema);
         } else if (valor.cat == CT_I && tabela_simbolos[k].tipo == BOOL_Tipo){
             tabela_simbolos[k].valor_const.valor_bool = (valor.valInt == 0 ? 0 : 1);
@@ -226,8 +228,21 @@ void Veri_Quant_param_menor(int topoLocal, int tamanPara){
     if(tamanPara < quantMax) error("Falta parametros na declaracao do PROC do que no PROT");
 }
 
-void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Passagem passagem, int cont_dim) {
+int Veri_Tipo(int k, TOKEN valor){
+    if(valor.cat == CT_I && (tabela_simbolos[k].tipo == INT_Tipo || tabela_simbolos[k].tipo == CHAR_Tipo)){
+        return 0;    
+    } else if (valor.cat == CT_R && tabela_simbolos[k].tipo == REAL_Tipo){
+        return 0;
+    } else if (valor.cat == CT_C && (tabela_simbolos[k].tipo == CHAR_Tipo || tabela_simbolos[k].tipo == INT_Tipo)){
+        return 0;
+    } else if (valor.cat == CT_I && tabela_simbolos[k].tipo == BOOL_Tipo){
+        return 0;
+    } else {
+        return -1;
+    }
+}
 
+void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Passagem passagem, int cont_dim) {
     tabela_simbolos[TOPO].escopo = escopo;
     tabela_simbolos[TOPO].tipo = tipo;
     tabela_simbolos[TOPO].passagem = passagem;
@@ -246,7 +261,6 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
     
     TOPO++;
 }
-
 
 int Insere_Tabela_parametro_procedimento(const char* lexema, int topoLocal){
     

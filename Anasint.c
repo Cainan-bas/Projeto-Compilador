@@ -9,6 +9,7 @@
 /* Variaveis globais */
 TOKEN t;
 FILE *fd;
+TOKEN aux;
 
 // variaveis da tabela
 int escopo_atual;
@@ -53,8 +54,6 @@ void Prog() {
 }
 
 void Decl_list_var(){
-    // bool testa_const;
-    // int tipo;
 
     testa_const = ((t.cat == PR) && (t.codigo == CONST)); //testa o const
 
@@ -145,7 +144,8 @@ void Decl_var(){
             }
         } else {
             if(t.cat == SN && t.codigo == ABRE_CHAVES) error("Chaves na declaracao de variavel escalar");
-            Insere_Valor(topoLocal, t,0,0);
+            if(testa_const) Insere_Valor(topoLocal, t,0,0); //depois verificar como atribuir os valores nos parametros array
+            if(Veri_Tipo(topoLocal, t) == -1) error("Tipos incompativeis");
             t.processado = true;
             t = analex();
         }
@@ -299,7 +299,7 @@ void Decl_def_prot(){
 
                     if(!(t.cat == SN && t.codigo == FECHA_COL)) error("Fecha colchete esperado");
                     t.processado = true;
-                    // Insere_Valor(topoLocal, t, cont_dim, tam_dims);
+                    Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
                 // problematico esse if
@@ -536,7 +536,7 @@ void Func_Atrib(){
     t = analex();
 
     //mechendo nessa parte
-    if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
+    //if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
     Func_Expr();
 }
 
@@ -601,6 +601,9 @@ void Func_Fator(){
     } else if (t.cat == SN && t.codigo == ABRE_PAR){
         t.processado = true;
         t = analex();
+
+
+
 
         Func_Expr();
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("Fecha parentese esperado");
