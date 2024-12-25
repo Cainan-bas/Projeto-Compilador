@@ -100,8 +100,8 @@ int Insere_Tabela_parametro_procedimento(const char*, int);
 void Verifica_Tabela_parametro(int, Escopo, Tipo, Categoria, Passagem, int);
 void Veri_Quant_param_maior(int , int );
 void Veri_Quant_param_menor(int, int);
-int Veri_Tipo(int , TOKEN );
-
+//int Veri_Tipo(int , TOKEN );
+int Veri_Tipo(int , int );
 
 void Remove_Tabela();
 void TornarVivo(TOKEN);

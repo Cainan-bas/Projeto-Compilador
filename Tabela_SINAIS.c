@@ -228,15 +228,16 @@ void Veri_Quant_param_menor(int topoLocal, int tamanPara){
     if(tamanPara < quantMax) error("Falta parametros na declaracao do PROC do que no PROT");
 }
 
-int Veri_Tipo(int k, TOKEN valor){
-    if(valor.cat == CT_I && (tabela_simbolos[k].tipo == INT_Tipo || tabela_simbolos[k].tipo == CHAR_Tipo)){
-        return 0;    
-    } else if (valor.cat == CT_R && tabela_simbolos[k].tipo == REAL_Tipo){
-        return 0;
-    } else if (valor.cat == CT_C && (tabela_simbolos[k].tipo == CHAR_Tipo || tabela_simbolos[k].tipo == INT_Tipo)){
-        return 0;
-    } else if (valor.cat == CT_I && tabela_simbolos[k].tipo == BOOL_Tipo){
-        return 0;
+//recebe dois valores e compara
+int Veri_Tipo(int tipoComp, int valor){
+    if(valor == CT_I && (tipoComp == INT_Tipo || tipoComp == CHAR_Tipo)){
+        return valor;    
+    } else if (valor == CT_R && tipoComp == REAL_Tipo){
+        return valor;
+    } else if (valor == CT_C && (tipoComp == CHAR_Tipo || tipoComp == INT_Tipo)){
+        return valor;
+    } else if (valor == CT_I && tipoComp == BOOL_Tipo){
+        return valor;
     } else {
         return -1;
     }

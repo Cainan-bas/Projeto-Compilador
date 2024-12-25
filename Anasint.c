@@ -18,6 +18,8 @@ int tipo;
 bool testa_array, testa_matriz;
 int tam_dims[MAX_ARRAY_DIM];
 
+int tipoVerificado;
+
 TOKEN analex(){
     do{
         t = Analex(fd);
@@ -145,7 +147,8 @@ void Decl_var(){
         } else {
             if(t.cat == SN && t.codigo == ABRE_CHAVES) error("Chaves na declaracao de variavel escalar");
             if(testa_const) Insere_Valor(topoLocal, t,0,0); //depois verificar como atribuir os valores nos parametros array
-            if(Veri_Tipo(topoLocal, t) == -1) error("Tipos incompativeis");
+            if(Veri_Tipo(tabela_simbolos[topoLocal].tipo, t.cat) == -1) error("Tipos incompativeis");
+            //if(Veri_Tipo(topoLocal, t) == -1) error("Tipos incompativeis");
             t.processado = true;
             t = analex();
         }
@@ -538,44 +541,59 @@ void Func_Atrib(){
     //mechendo nessa parte
     //if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
     Func_Expr();
+    if(tipoVerificado != tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo) error("tipos incompativeis"); 
 }
 
 void Func_Expr(){
+    int aux;
+
     Func_ExprSimples();
+    aux = tipoVerificado;
 
     if (t.cat == SN && (t.codigo == IGUALDADE || t.codigo == DIFERENTE || t.codigo == MENOR || t.codigo == MENOR_IGUAL ||
         t.codigo == MAIOR || t.codigo == MAIOR_IGUAL)){
             t.processado = true;
             t = analex();
             Func_ExprSimples();
+            // se a verificacao der como incompativeis
+            if (tipoVerificado != aux) error("tipos incompativeis"); 
     }
 }
 
 void Func_ExprSimples(){
+    int aux;
+
     if ((t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO))){
         t.processado = true;
         t = analex();
     }
 
     Func_Termo();
+    aux = tipoVerificado;
 
     while (t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO || t.codigo == COND_ALTERNATIVA)){
         t.processado = true;
         t = analex();
 
         Func_Termo();
+        // se a verificacao der como incompativeis
+        if (tipoVerificado != aux) error("tipos incompativeis"); 
     }   
 }
 
 void Func_Termo(){
+    int aux;
     
     Func_Fator();
+    aux = tipoVerificado;
 
     while (t.cat == SN && (t.codigo == MULTIPLICACAO || t.codigo == DIVISAO || t.codigo == COND_ADICAO)){
         t.processado = true;
         t = analex();
 
         Func_Fator();
+        // se a verificacao der como incompativeis
+        if (tipoVerificado != aux) error("tipos incompativeis"); 
     } 
 }
 
@@ -597,14 +615,11 @@ void Func_Fator(){
         }
     } else if (t.cat == CT_I || t.cat == CT_C || t.cat == CT_R){
         t.processado = true;
+        tipoVerificado = t.cat;
         t = analex();
     } else if (t.cat == SN && t.codigo == ABRE_PAR){
         t.processado = true;
         t = analex();
-
-
-
-
         Func_Expr();
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("Fecha parentese esperado");
         t.processado = true;
