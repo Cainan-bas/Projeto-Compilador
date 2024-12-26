@@ -549,6 +549,7 @@ void Func_Expr(){
 
     Func_ExprSimples();
     aux = tipoVerificado;
+    //printf("aux - %d\n", aux);
 
     if (t.cat == SN && (t.codigo == IGUALDADE || t.codigo == DIFERENTE || t.codigo == MENOR || t.codigo == MENOR_IGUAL ||
         t.codigo == MAIOR || t.codigo == MAIOR_IGUAL)){
@@ -556,7 +557,10 @@ void Func_Expr(){
             t = analex();
             Func_ExprSimples();
             // se a verificacao der como incompativeis
-            if (tipoVerificado != aux) error("tipos incompativeis"); 
+            //if (tipoVerificado != aux) error("tipos incompativeis");
+            // printf("TIPOVERIFICADO - %d\n", tipoVerificado);
+            // printf("aux - %d\n", aux);
+            if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 3");
     }
 }
 
@@ -577,7 +581,9 @@ void Func_ExprSimples(){
 
         Func_Termo();
         // se a verificacao der como incompativeis
-        if (tipoVerificado != aux) error("tipos incompativeis"); 
+        //if (tipoVerificado != aux) error("tipos incompativeis"); 
+        if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 2");
+        printf("aux - %d\n", aux);
     }   
 }
 
@@ -585,7 +591,7 @@ void Func_Termo(){
     int aux;
     
     Func_Fator();
-    aux = tipoVerificado;
+    aux = tipoVerificado; //quardo o tipo retornado para comparacao
 
     while (t.cat == SN && (t.codigo == MULTIPLICACAO || t.codigo == DIVISAO || t.codigo == COND_ADICAO)){
         t.processado = true;
@@ -593,14 +599,17 @@ void Func_Termo(){
 
         Func_Fator();
         // se a verificacao der como incompativeis
-        if (tipoVerificado != aux) error("tipos incompativeis"); 
+        //if (tipoVerificado != aux) error("tipos incompativeis"); 
+        if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI -1");
     } 
 }
 
 void Func_Fator(){
     if(t.cat == ID){
         t.processado = true;
-        if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+        if(Consulta_Tabela(t.lexema, -1) == -1)error("Identificador nao declarado");
+        //if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+        tipoVerificado = tabela_simbolos[Consulta_Tabela(t.lexema, -1)].tipo;
         t = analex();
 
         while((t.cat == SN) && (t.codigo == ABRE_COL)){
@@ -615,7 +624,10 @@ void Func_Fator(){
         }
     } else if (t.cat == CT_I || t.cat == CT_C || t.cat == CT_R){
         t.processado = true;
-        tipoVerificado = t.cat;
+        
+        tipoVerificado = t.cat; // atualiza para o teste de tipo
+        //printf("TIPOVERIFICADO - %d\n", tipoVerificado);
+
         t = analex();
     } else if (t.cat == SN && t.codigo == ABRE_PAR){
         t.processado = true;
