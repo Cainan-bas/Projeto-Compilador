@@ -67,9 +67,9 @@ int main() {
     system("chcp 65001");  // Troca a página de códigos de caracteres 
                            // da console para UTF-8 na execução
 
-    contLinha = 1;
-    printf("\n\n[Análise Léxica -------------------]\n");
-    TestaAnalex();
+    // contLinha = 1;
+    // printf("\n\n[Análise Léxica -------------------]\n");
+    // TestaAnalex();
 
     contLinha = 1;
     printf("\n\n[Análise Sintática ----------------]\n");

@@ -232,13 +232,13 @@ void Veri_Quant_param_menor(int topoLocal, int tamanPara){
 // ainda em andamento
 int Veri_Tipo(int tipoComp, int valor){
     if((valor == CT_I || valor == INT_Tipo) && (tipoComp == INT_Tipo || tipoComp == CHAR_Tipo || tipoComp == CT_I || tipoComp == CT_C)){
-        return valor;    
+        return INT_Tipo;    
     } else if ((valor == CT_R || valor == REAL_Tipo) && (tipoComp == REAL_Tipo || tipoComp == CT_R)){ 
-        return valor;
+        return REAL_Tipo;
     } else if ((valor == CT_C || valor == CHAR_Tipo) && (tipoComp == CHAR_Tipo || tipoComp == INT_Tipo || tipoComp == CT_I || tipoComp == CT_C)){
-        return valor;
+        return INT_Tipo;
     } else if ((valor == CT_I || valor == INT_Tipo || valor == BOOL_Tipo) && (tipoComp == BOOL_Tipo || tipoComp == CT_I)){
-        return valor;
+        return INT_Tipo;
     } else {
         return -1;
     }

@@ -52,6 +52,13 @@ void Prog() {
         escopo_atual = GLB;
         Decl_def_prot();
     }
+
+   for (int i = 0; i < TOPO; i++) {
+        if (tabela_simbolos[i].categoria == PROT) {
+            error("PROT sem definicao encontrado");
+        }
+    }
+    
     if (t.cat != FIM_ARQ) error("Declaração ou definição de procedimento esperado!");
 }
 
@@ -374,6 +381,12 @@ void Func_CMD(){
         t = analex();
 
         Func_Expr();
+
+        printf("tipoVerificado %d\n", tipoVerificado);
+        printf("Pressione Enter para continuar...\n");
+        getchar();
+        printf("------------------------------\n");
+
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("CMD -> WHILE inválida, falta abre parenteses");
         t.processado = true;
         t = analex();
@@ -539,9 +552,8 @@ void Func_Atrib(){
     t = analex();
 
     //mechendo nessa parte
-    //if(tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo != t.codigo)error("erro de tipo");
     Func_Expr();
-    if(tipoVerificado != tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo) error("tipos incompativeis"); 
+    if(Veri_Tipo(tipoVerificado, tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo) == -1) error("tipos incompativeis - AQUI 4"); 
 }
 
 void Func_Expr(){
@@ -558,8 +570,8 @@ void Func_Expr(){
             Func_ExprSimples();
             // se a verificacao der como incompativeis
             //if (tipoVerificado != aux) error("tipos incompativeis");
-            // printf("TIPOVERIFICADO - %d\n", tipoVerificado);
-            // printf("aux - %d\n", aux);
+            printf("TIPOVERIFICADO - %d\n", tipoVerificado);
+            printf("aux - %d\n", aux);
             if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 3");
     }
 }

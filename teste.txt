@@ -8,6 +8,7 @@ prot removerUltimaTarefa()
 prot adicionarTarefa(char[])
 prot listarTarefas()
 prot removerTodasTarefas()
+prot kaik()
 
 def listarTarefas()
     int i = 10
@@ -65,7 +66,7 @@ endp
 
 def init
     int opcao
-    while(1)
+    while(2.4>1.5)
       putstr "O que deseja fazer?"
       putstr "1 - Criar Tarefa"
       putchar '\n'
