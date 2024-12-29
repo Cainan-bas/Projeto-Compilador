@@ -347,6 +347,7 @@ void Decl_def_prot(){
 }
 
 void Func_CMD(){
+    int tamanPara = 0, topoLocal;
     if (t.cat == ID) {
         Func_Atrib();
     } else if(t.cat == PR && t.codigo == DO){
@@ -356,6 +357,7 @@ void Func_CMD(){
         t.processado = true;
         // ajeitar esse if que esta incorreto
         if(Consulta_Tabela(t.lexema, 0) == -1 || (tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROT && tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROCED)) error("PROT/PROC nao declarado anteriormente");
+        topoLocal = Consulta_Tabela(t.lexema, 0);
         // if(Consulta_Tabela(t.lexema, 0) == -1 ) error("PROT/PROC nao declarados");
         t = analex();
 
@@ -365,6 +367,7 @@ void Func_CMD(){
             t = analex();
 
             if((t.cat == SN && t.codigo == FECHA_PAR)) break;
+            tamanPara++;
             
             Func_Expr();
 
@@ -372,6 +375,8 @@ void Func_CMD(){
 
         if(!(t.cat == SN && t.codigo == FECHA_PAR)) error("CMD -> DO inválida, falta fecha parenteses");
         t.processado = true;
+        Veri_Quant_param_maior(topoLocal, tamanPara);
+        Veri_Quant_param_menor(topoLocal, tamanPara);
         t = analex();
     } else if (t.cat == PR && t.codigo == WHILE){
         t.processado = true;
@@ -382,10 +387,10 @@ void Func_CMD(){
 
         Func_Expr();
 
-        printf("tipoVerificado %d\n", tipoVerificado);
-        printf("Pressione Enter para continuar...\n");
-        getchar();
-        printf("------------------------------\n");
+        // printf("tipoVerificado %d\n", tipoVerificado);
+        // printf("Pressione Enter para continuar...\n");
+        // getchar();
+        // printf("------------------------------\n");
 
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("CMD -> WHILE inválida, falta abre parenteses");
         t.processado = true;
@@ -570,8 +575,8 @@ void Func_Expr(){
             Func_ExprSimples();
             // se a verificacao der como incompativeis
             //if (tipoVerificado != aux) error("tipos incompativeis");
-            printf("TIPOVERIFICADO - %d\n", tipoVerificado);
-            printf("aux - %d\n", aux);
+            // printf("TIPOVERIFICADO - %d\n", tipoVerificado);
+            // printf("aux - %d\n", aux);
             if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 3");
     }
 }
