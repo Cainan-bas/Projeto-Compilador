@@ -11,11 +11,13 @@
 /* Variaveis globais */
 TOKEN t;
 FILE *fd;
+FILE *pilha;
+
 int contLinha;
 char TABS[200] = "";
 
 void TestaAnalex(){
-    if ((fd=fopen("teste.txt", "r")) == NULL)
+    if ((fd=fopen("teste2.txt", "r")) == NULL)
         error("Arquivo de entrada da expressão nao encontrado!");
     
     t.processado = true; // Garante que o próximo token será lido
@@ -38,10 +40,16 @@ void TestaAnalex(){
 }
 
 void TestaAnasint() {
-    if ((fd=fopen("teste.txt", "r")) == NULL)
+    if ((fd=fopen("teste2.txt", "r")) == NULL)
         error("Arquivo de entrada da expressão nao encontrado!");
     
-    t.processado = true; 
+    if ((pilha=fopen("codigoPilha.txt", "w")) == NULL)
+        error("Arquivo de entrada da expressão nao encontrado!");
+    
+    // t.processado = true; 
+    
+
+    
     while (true) {
         t = analex();
         if (t.cat == FIM_ARQ) {

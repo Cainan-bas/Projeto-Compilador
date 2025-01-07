@@ -1,69 +1,8 @@
-
-const int a,b,c
-
-prot subtrair(&int [][], int, int)
-prot kaik()
-
-// asdhasjkdhk
-
-def somar(int r, int a, int b) 
-    int z
-    z = a + b
-    r = z
+def p(int c)
+	    c = 2
 endp
-
-// Ponto 1
-
-def subtrair(&int r[a][c], int a, int b) 
-    int w
-    w = a - b
-    r = w
-endp
-
-// Ponto 2
-
-def multiplicar(&int r, int a, int b) 
-    int x, y
-    x = a
-    y = b
-    r = x
-endp
-
-def dividir(&int r, int a, int b) 
-    if (b != 0) 
-        r = a / b
-    else  
-        putstr "Divisao por zero!"
-        r = 0
-    endi
-endp
-
-// Ponto 3
-
-def init  
-    int z
-    a = 10
-    b = 5
-
-    // Ponto 4
-
-    do somar(z, a, b)
-    putstr "Soma: "
-    putint z
-    putchar '\n'
-
-    do subtrair(z, a, b)
-    putstr "Subtracao: "
-    putint z
-    putchar '\n'
-
-    do multiplicar(z, a, b)
-    putstr "Multiplicacao: "
-    putint z
-    putchar '\n'
-
-    do dividir(z, a, b)
-    putstr "Divisao: "
-    putint z
-    putchar '\n'
+	
+def init
+	int c = 2
+	do p(c)
 endp

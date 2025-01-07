@@ -4,6 +4,7 @@
 #include "Analex.h"
 #include "Anasint.h"
 #include "Tabela_SINAIS.h"
+#include "GeraCodigo.h"
 
 int TOPO = 0;
 SIMBOLO tabela_simbolos[TAM_MAX_TABELA];
@@ -97,7 +98,11 @@ int Insere_Tabela(const char *lexema, Escopo escopo) {
     // melhorar essa consulta na tabela, talvez colocar por token
     posicaoLocal = Consulta_Tabela(lexema, 0);
     if (posicaoLocal != -1) {
-        if(tabela_simbolos[posicaoLocal].categoria != GLOBAL) error("Redeclaracao de variavel LOCAL");
+        printf("Variavel %d\n", tabela_simbolos[posicaoLocal].categoria);
+        // if(tabela_simbolos[posicaoLocal].categoria != GLOBAL) error("Redeclaracao de variavel LOCAL");
+        if(tabela_simbolos[posicaoLocal].categoria != GLOBAL && tabela_simbolos[posicaoLocal].categoria != PARAMETRO) error("Redeclaracao de variavel LOCAL");
+        
+        
         posicaoLocal = Consulta_Tabela(lexema, posicaoLocal);
         if(posicaoLocal != -1){
             if(tabela_simbolos[posicaoLocal].categoria == GLOBAL) error("Redeclaracao de variavel GLOBAL");
@@ -109,7 +114,9 @@ int Insere_Tabela(const char *lexema, Escopo escopo) {
     strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
     tabela_simbolos[TOPO].escopo = escopo;
     
-    tabela_simbolos[TOPO].endereco = TOPO;
+    // tabela_simbolos[TOPO].endereco = TOPO;
+    tabela_simbolos[TOPO].endereco = endeDeclVar;
+    endeDeclVar+=1;
     // Imprimi_Tabela();
 
     TOPO++;
@@ -176,20 +183,20 @@ void Insere_Tabela_decl_def_prot(const char *lexema, Escopo escopo, Categoria ca
     posicaoLocal = Consulta_Tabela(lexema, 0);
 
     if (posicaoLocal != -1) {
-        // if(tabela_simbolos[posicaoLocal].categoria != PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
         if(categoria == PROT) error("Variavel local/global com mesmo nome que PROT/PROC");
         if(categoria == tabela_simbolos[posicaoLocal].categoria) error("Redeclaracao de procedimento");
         tabela_simbolos[posicaoLocal].categoria = categoria;
         Imprimi_Tabela();
+
     } else {
         strncpy(tabela_simbolos[TOPO].lexema, lexema, TAM_MAX_LEXEMA);
         tabela_simbolos[TOPO].escopo = escopo;
-        // tabela_simbolos[TOPO].categoria = categoria;
         //pequena mudança
         Insere_Tabela_decl_var_escalar(TOPO, N_A_Tipo,  categoria,  N_A_Array,  NAO);
+        strcpy(tabela_simbolos[TOPO].rotulo, criarLabel());
 
         Imprimi_Tabela();
-        tabela_simbolos[TOPO].endereco = TOPO;
+        // tabela_simbolos[TOPO].endereco = TOPO;
         TOPO++;
     }
     // return TOPO-1;
@@ -245,6 +252,8 @@ int Veri_Tipo(int tipoComp, int valor){
 }
 
 void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Passagem passagem, int cont_dim) {
+    int cont=1;
+
     tabela_simbolos[TOPO].escopo = escopo;
     tabela_simbolos[TOPO].tipo = tipo;
     tabela_simbolos[TOPO].passagem = passagem;
@@ -258,7 +267,14 @@ void Insere_Tabela_parametro(Escopo escopo, Tipo tipo, Categoria categoria, Pass
     } else{
         error("Mais colchetes que o permitido");
     }
-    tabela_simbolos[TOPO].endereco = TOPO;
+    tabela_simbolos[TOPO].endereco = endeDeclVar;
+
+    while (tabela_simbolos[TOPO-cont].categoria == PARAMETRO)
+    {
+        tabela_simbolos[TOPO-cont].endereco = endeDeclVar-cont;
+        cont+=1;
+    }
+    
     Imprimi_Tabela();
     
     TOPO++;
@@ -310,9 +326,9 @@ void TornarZumbi(TOKEN nomeDef){
 void Imprimi_Tabela() {
     printf("\n");
     printf("  TOPO  ->  %d\n", TOPO);
-    printf("┌───────────────────────────────┬──────┬────────┬───────────┬────────────┬─────────┬─────────┬────────┬────────┬───────────┬───────────┬──────────┐\n");
-    printf("│           Lexema              │ Tipo │ Escopo │ Categoria │  Passagem  │  Zumbi  │  Array  │ Dim. 1 │ Dim. 2 │ EhConst   │ ValorConst│ Endereço │\n");
-    printf("├───────────────────────────────┼──────┼────────┼───────────┼────────────┼─────────┼─────────┼────────┼────────┼───────────┼───────────┼──────────┤\n");
+    printf("┌───────────────────────────────┬──────┬────────┬───────────┬────────────┬─────────┬─────────┬────────┬────────┬───────────┬───────────┬──────────┬────────┐\n");
+    printf("│           Lexema              │ Tipo │ Escopo │ Categoria │  Passagem  │  Zumbi  │  Array  │ Dim. 1 │ Dim. 2 │ EhConst   │ ValorConst│ Endereço │ rotulo │\n");
+    printf("├───────────────────────────────┼──────┼────────┼───────────┼────────────┼─────────┼─────────┼────────┼────────┼───────────┼───────────┼──────────┼────────┤\n");
 
     for (int i = 0; i < TOPO; i++) {
         SIMBOLO sim = tabela_simbolos[i];
@@ -347,15 +363,16 @@ void Imprimi_Tabela() {
                 printf("    N/A   │ ");
                 break;
         }
-        printf("%-8d │\n", sim.endereco);
+        printf("%-8d │", sim.endereco);
+        printf("%-7s │\n", sim.rotulo);
 
         // Adiciona uma linha divisória entre as entradas
         if (i < TOPO - 1) {
-            printf("├───────────────────────────────┼──────┼────────┼───────────┼────────────┼─────────┼─────────┼────────┼────────┼───────────┼───────────┼──────────┤\n");
+            printf("├───────────────────────────────┼──────┼────────┼───────────┼────────────┼─────────┼─────────┼────────┼────────┼───────────┼───────────┼──────────┼────────┤\n");
         }
     }
 
-    printf("└───────────────────────────────┴──────┴────────┴───────────┴────────────┴─────────┴─────────┴────────┴────────┴───────────┴───────────┴──────────┘\n");
+    printf("└───────────────────────────────┴──────┴────────┴───────────┴────────────┴─────────┴─────────┴────────┴────────┴───────────┴───────────┴──────────┴────────┘\n");
     printf("Pressione Enter para continuar...\n");
     getchar();
 }

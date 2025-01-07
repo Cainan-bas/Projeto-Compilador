@@ -6,7 +6,6 @@ char tarefas[MAX_TAM_TAREFAS][MAX_LETTERS]
 prot criarTarefa()
 prot removerUltimaTarefa()
 prot adicionarTarefa(char[])
-prot listarTarefas()
 prot removerTodasTarefas()
 
 def listarTarefas()
@@ -48,10 +47,6 @@ def criarTarefa()
     putstr "Tarefa criada com sucesso"
 endp
 
-def adicionarTarefa(char t[MAX_LETTERS])
-    tarefas[index] = t
-    index = index + 1
-endp
 
 def removerUltimaTarefa()
     index = index - 1
@@ -85,4 +80,9 @@ def init
       endi
 
    endw
+endp
+
+def adicionarTarefa(char t[MAX_LETTERS])
+    tarefas[index] = t
+    index = index + 1
 endp

@@ -4,6 +4,7 @@
 #include "Analex.h"
 #include "Anasint.h"
 #include "Tabela_SINAIS.h" 
+#include "GeraCodigo.h"
 
 
 /* Variaveis globais */
@@ -17,6 +18,7 @@ bool testa_const;
 int tipo;
 bool testa_array, testa_matriz;
 int tam_dims[MAX_ARRAY_DIM];
+int endeDeclVar;
 
 int tipoVerificado;
 
@@ -41,8 +43,10 @@ void printError(TOKEN aux){
 }
 
 void Prog() {
-    escopo_atual = GLB; 
+    escopo_atual = GLB;
+    escrevePilha("INIP\n");
     // t = analex();
+    endeDeclVar = 0;
     while ((t.cat == PR) &&
            ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) ||
             (t.codigo == CHAR) || (t.codigo == BOOL))) {
@@ -60,6 +64,7 @@ void Prog() {
     }
     
     if (t.cat != FIM_ARQ) error("Declaração ou definição de procedimento esperado!");
+    escrevePilha("HALT\n");
 }
 
 void Decl_list_var(){
@@ -77,13 +82,15 @@ void Decl_list_var(){
     tipo = t.codigo;
     t.processado = true;
     t = analex();
-
+    
     Decl_var();
+    printf("endereco %d, linha - %d\n", endeDeclVar, contLinha);
 
     while ((t.cat == SN) && (t.codigo == VIRGULA)) {
         t.processado = true;
         t = analex();
         Decl_var();
+        printf("endereco %d, linha - %d\n", endeDeclVar, contLinha);
     }
 }
 
@@ -186,6 +193,7 @@ void Decl_def_prot(){
 
         if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("Incialização de prot inválida, falta parenteses");
         
+        endeDeclVar = -3;
         do{
             t.processado = true;
             t = analex();
@@ -232,6 +240,10 @@ void Decl_def_prot(){
         if((t.cat == PR && t.codigo == INIT)){
             t.processado = true;
             Insere_Tabela_decl_def_prot("init", escopo_atual, PROCED);
+            
+            escrevePilha("LABEL %s\n",tabela_simbolos[Consulta_Tabela("init", 0)].rotulo);
+            escrevePilha("INIP 1\n");
+
             escopo_atual = LCL;
             t = analex();
         }
@@ -241,8 +253,11 @@ void Decl_def_prot(){
             Insere_Tabela_decl_def_prot(t.lexema, escopo_atual, PROCED);
             nomeID = t;
             escopo_atual = LCL;
-
             topoLocal = Consulta_Tabela(t.lexema, 0);
+            
+            escrevePilha("LABEL %s\n",tabela_simbolos[topoLocal].rotulo);
+            escrevePilha("INIP 1\n");
+
             if(topoLocal+1 == TOPO) topoLocal=-1; //forca topolocal a ser igual -1 para nao entrar na primeira vez no if de PROT
             
             t = analex();
@@ -312,7 +327,6 @@ void Decl_def_prot(){
                     Insere_Valor(topoLocal, t, cont_dim, tam_dims);
                     t = analex(); 
                 }
-                // problematico esse if
 
                 if(topoLocal == -1){ 
                     Insere_Tabela_parametro(escopo_atual, tipo, PARAMETRO, passagemLocal, cont_dim);
@@ -330,6 +344,7 @@ void Decl_def_prot(){
             t = analex();
         }
 
+        endeDeclVar = 0;
         while ((t.cat == PR) && ((t.codigo == CONST) || (t.codigo == INT) || (t.codigo == REAL) || (t.codigo == CHAR) || (t.codigo == BOOL))) {
             TornarVivo(nomeID);
             Decl_list_var();
@@ -341,13 +356,14 @@ void Decl_def_prot(){
         t.processado = true;
         Remove_Tabela();
         TornarZumbi(nomeID);
-        // Imprimi_Tabela();
         t = analex();
     }
 }
 
 void Func_CMD(){
     int tamanPara = 0, topoLocal;
+    char label[10], labelInicio[10], labelFim[10];
+
     if (t.cat == ID) {
         Func_Atrib();
     } else if(t.cat == PR && t.codigo == DO){
@@ -358,7 +374,9 @@ void Func_CMD(){
         // ajeitar esse if que esta incorreto
         if(Consulta_Tabela(t.lexema, 0) == -1 || (tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROT && tabela_simbolos[Consulta_Tabela(t.lexema, 0)].categoria != PROCED)) error("PROT/PROC nao declarado anteriormente");
         topoLocal = Consulta_Tabela(t.lexema, 0);
-        // if(Consulta_Tabela(t.lexema, 0) == -1 ) error("PROT/PROC nao declarados");
+        
+        strcpy(label, tabela_simbolos[topoLocal].rotulo);
+
         t = analex();
 
         if(!(t.cat == SN && t.codigo == ABRE_PAR)) error("CMD -> DO inválida, falta abre parenteses");
@@ -377,9 +395,17 @@ void Func_CMD(){
         t.processado = true;
         Veri_Quant_param_maior(topoLocal, tamanPara);
         Veri_Quant_param_menor(topoLocal, tamanPara);
+
+        escrevePilha("CALL %s\n", label);
+        // escrevePilha("CALL %s\n", tabela_simbolos[topoLocal].rotulo);
+
         t = analex();
     } else if (t.cat == PR && t.codigo == WHILE){
         t.processado = true;
+
+        strcpy(labelInicio, criarLabel());
+        escrevePilha("LABEL %s\n", labelInicio);
+
         t = analex();
         if (!(t.cat == SN && t.codigo == ABRE_PAR)) error("Abre parentese esperado");
         t.processado = true;
@@ -387,18 +413,18 @@ void Func_CMD(){
 
         Func_Expr();
 
-        // printf("tipoVerificado %d\n", tipoVerificado);
-        // printf("Pressione Enter para continuar...\n");
-        // getchar();
-        // printf("------------------------------\n");
-
         if (!(t.cat == SN && t.codigo == FECHA_PAR)) error("CMD -> WHILE inválida, falta abre parenteses");
         t.processado = true;
+
+        strcpy(labelFim, criarLabel());
+        escrevePilha("GOFALSE %s\n", labelFim);
+
         t = analex();
         while(!(t.cat == PR && t.codigo == ENDW)){
             Func_CMD();
         }
         t.processado = true;
+        escrevePilha("GOTO %s\nLABEL %s\n", labelInicio, labelFim);
         t =analex();
     } else if (t.cat == PR && t.codigo == VAR){
         t.processado = true;
@@ -449,10 +475,19 @@ void Func_CMD(){
         t.processado = true;
         t = analex();
 
+        strcpy(labelInicio, criarLabel());
+        escrevePilha("GOFALSE %s\n", labelInicio);
+
         while(!(t.cat == PR && (t.codigo == ELIF || t.codigo == ELSE || t.codigo == ENDI))){
             Func_CMD();
         }
+        
+        strcpy(labelFim, criarLabel());
+        escrevePilha("GOTO %s\n", labelFim);
+
         while(t.cat == PR && t.codigo == ELIF){
+            escrevePilha("LABEL %s\n", labelInicio);
+
             t.processado = true;
             t = analex();
             if (!(t.cat == SN && t.codigo == ABRE_PAR)) error("Abre parentese esperado");
@@ -464,16 +499,22 @@ void Func_CMD(){
             t.processado = true;
             t = analex();
 
+            strcpy(labelInicio, criarLabel());
+            escrevePilha("GOFALSE %s\n", labelInicio);
+
             while(!(t.cat == PR && (t.codigo == ELIF || t.codigo == ELSE || t.codigo == ENDI))){
                 Func_CMD();
             }
+            escrevePilha("GOTO %s\n", labelFim);
         }
         if(t.cat == PR && t.codigo == ELSE){
+            escrevePilha("LABEL %s\n", labelInicio);
             t.processado = true;
             t = analex();
             while(!(t.cat == PR && t.codigo == ENDI)){
                 Func_CMD();
             }
+            escrevePilha("LABEL %s\n", labelFim);
         }
         t.processado = true;
         t = analex();
@@ -481,38 +522,73 @@ void Func_CMD(){
         t.processado = true;
         t = analex();
     } else if (t.cat == PR && (t.codigo == GETCHAR || t.codigo == GETINT || t.codigo == GETREAL || t.codigo == GETSTR)){
+        int codigoGet;
+        codigoGet = t.codigo;
         t.processado = true;
         t = analex();
         if(t.cat != ID) error("CMD -> GETS, Identificador esperado"); //testa id
         t.processado = true;
-        if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+        if(Consulta_Tabela(t.lexema, -1) == -1)error("Identificador nao declarado");
+        escreveGetsCmd(codigoGet, Consulta_Tabela(t.lexema, -1));
         t = analex();
     } else if (t.cat == PR && t.codigo == PUTINT){
+        int posicaoPutIn;
         t.processado = true;
         t = analex();
         if(t.cat == ID || t.cat == CT_I){
             t.processado = true;
             if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+
+            if(t.cat == ID){
+                posicaoPutIn = Consulta_Tabela(t.lexema, -1);
+                if(tabela_simbolos[posicaoPutIn].passagem == REFERENCIA) escrevePilha("LOADI %d, %d\n", tabela_simbolos[posicaoPutIn].escopo, tabela_simbolos[posicaoPutIn].endereco);
+                else escrevePilha("LOAD %d, %d\n", tabela_simbolos[posicaoPutIn].escopo, tabela_simbolos[posicaoPutIn].endereco);
+            } else {
+                escrevePilha("PUSH %d\n", t.valInt);
+            }
+            escrevePilha("PUT_I\n");
             t = analex();
         }else{
             error("CMD -> PUTINT, Identificador esperado ou const inteira");
         }
     } else if (t.cat == PR && t.codigo == PUTREAL){
+        int posicaoPutRe;
         t.processado = true;
         t = analex();
         if(t.cat == ID || t.cat == CT_R){
             t.processado = true;
             if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+
+            if(t.cat == ID){
+                posicaoPutRe = Consulta_Tabela(t.lexema, -1);
+                if(tabela_simbolos[posicaoPutRe].passagem == REFERENCIA) escrevePilha("LOADI %d, %d\n", tabela_simbolos[posicaoPutRe].escopo, tabela_simbolos[posicaoPutRe].endereco);
+                else escrevePilha("LOAD %d, %d\n", tabela_simbolos[posicaoPutRe].escopo, tabela_simbolos[posicaoPutRe].endereco);
+            } else {
+                escrevePilha("PUSHF %f\n", t.valFloat);
+            }
+            escrevePilha("PUT_F\n");
+
             t = analex();
         }else{
             error("CMD -> PUTREAL, Identificador esperado ou const inteira");
         }
     } else if (t.cat == PR && t.codigo == PUTCHAR){
+        int posicaoPutChar;
         t.processado = true;
         t = analex();
         if(t.cat == ID || t.cat == CT_C){
             t.processado = true;
             if(t.cat == ID && Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+
+            if(t.cat == ID){
+                posicaoPutChar = Consulta_Tabela(t.lexema, -1);
+                if(tabela_simbolos[posicaoPutChar].passagem == REFERENCIA) escrevePilha("LOADI %d, %d\n", tabela_simbolos[posicaoPutChar].escopo, tabela_simbolos[posicaoPutChar].endereco);
+                else escrevePilha("LOAD %d, %d\n", tabela_simbolos[posicaoPutChar].escopo, tabela_simbolos[posicaoPutChar].endereco);
+            } else {
+                escrevePilha("PUSH %d\n", t.lexema);
+            }
+            escrevePilha("PUT_C\n");
+
             t = analex();
         }else{
             error("CMD -> PUTCHAR, Identificador esperado ou const inteira");
@@ -534,13 +610,16 @@ void Func_CMD(){
 
 void Func_Atrib(){
     TOKEN tokenRecebe;
+    int posicao;
 
     if(t.cat != ID) error("Identificador esperado"); 
     t.processado = true;
-    if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+    posicao = Consulta_Tabela(t.lexema, 0) == -1;
+    if(posicao)error("Identificador nao declarado");
     tokenRecebe = t;
     t = analex();
 
+    if(tabela_simbolos[posicao].array != SIMPLES) escrevePilha("LDDLC 0\n");
     while((t.cat == SN) && (t.codigo == ABRE_COL)){ 
         t.processado = true;
         t = analex();
@@ -552,37 +631,41 @@ void Func_Atrib(){
         t = analex(); 
         
     }
+    if(tabela_simbolos[posicao].array != SIMPLES) escrevePilha("ADD \n");
+
     if (!(t.cat == SN && t.codigo == ATRIBUICAO))error("Sinal de igual esperado");
     t.processado = true;
     t = analex();
 
     //mechendo nessa parte
     Func_Expr();
-    if(Veri_Tipo(tipoVerificado, tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo) == -1) error("tipos incompativeis - AQUI 4"); 
+    if(Veri_Tipo(tipoVerificado, tabela_simbolos[Consulta_Tabela(tokenRecebe.lexema, -1)].tipo) == -1) error("tipos incompativeis - AQUI 4");
+
+    posicao = Consulta_Tabela(tokenRecebe.lexema, -1);
+    escrevePilha("STOR %d, %d\n", tabela_simbolos[posicao].escopo, tabela_simbolos[posicao].endereco);
 }
 
 void Func_Expr(){
-    int aux;
+    int aux, codigo;
 
     Func_ExprSimples();
     aux = tipoVerificado;
-    //printf("aux - %d\n", aux);
 
     if (t.cat == SN && (t.codigo == IGUALDADE || t.codigo == DIFERENTE || t.codigo == MENOR || t.codigo == MENOR_IGUAL ||
         t.codigo == MAIOR || t.codigo == MAIOR_IGUAL)){
             t.processado = true;
+            codigo = t.codigo;
             t = analex();
             Func_ExprSimples();
-            // se a verificacao der como incompativeis
-            //if (tipoVerificado != aux) error("tipos incompativeis");
-            // printf("TIPOVERIFICADO - %d\n", tipoVerificado);
-            // printf("aux - %d\n", aux);
             if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 3");
+
+            escreveCodCompara(codigo);
     }
 }
 
 void Func_ExprSimples(){
-    int aux;
+    int aux, tipo;
+    char label[10];
 
     if ((t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO))){
         t.processado = true;
@@ -590,43 +673,66 @@ void Func_ExprSimples(){
     }
 
     Func_Termo();
+    // talvez colocar um escreveOperadores
     aux = tipoVerificado;
 
     while (t.cat == SN && (t.codigo == ADICAO || t.codigo == SUBTRACAO || t.codigo == COND_ALTERNATIVA)){
         t.processado = true;
+        tipo = t.codigo;
         t = analex();
 
+        if(tipo == COND_ALTERNATIVA){
+            strcpy(label, criarLabel());
+            escrevePilha("COPY \nGOTRUE %s \nPOP \n", label);
+        }
+
         Func_Termo();
+        escreveOperacoes(tipo);
         // se a verificacao der como incompativeis
-        //if (tipoVerificado != aux) error("tipos incompativeis"); 
+        if(tipo == COND_ALTERNATIVA) escrevePilha("LABEL %s\n", label);
+        
         if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI 2");
-        printf("aux - %d\n", aux);
     }   
 }
 
 void Func_Termo(){
-    int aux;
+    int aux, tipo;
+    char label[10];
     
     Func_Fator();
     aux = tipoVerificado; //quardo o tipo retornado para comparacao
 
     while (t.cat == SN && (t.codigo == MULTIPLICACAO || t.codigo == DIVISAO || t.codigo == COND_ADICAO)){
         t.processado = true;
+        tipo = t.codigo;
         t = analex();
 
+        if(tipo == COND_ADICAO){
+            strcpy(label, criarLabel());
+            escrevePilha("COPY \nGOFALSE %s \nPOP \n", label);
+        }
+
         Func_Fator();
+        escreveOperacoes(tipo);
         // se a verificacao der como incompativeis
-        //if (tipoVerificado != aux) error("tipos incompativeis"); 
+        if(tipo == COND_ADICAO) escrevePilha("LABEL %s\n", label);
+
         if(Veri_Tipo(tipoVerificado, aux) == -1) error("tipos incompativeis - AQUI -1");
     } 
 }
 
 void Func_Fator(){
+    char labelInicio[10], labelFim[10];
+    int posicao;
+
     if(t.cat == ID){
         t.processado = true;
-        if(Consulta_Tabela(t.lexema, -1) == -1)error("Identificador nao declarado");
-        //if(Consulta_Tabela(t.lexema, 0) == -1)error("Identificador nao declarado");
+        posicao = Consulta_Tabela(t.lexema, -1);
+        if(posicao == -1)error("Identificador nao declarado");
+        
         tipoVerificado = tabela_simbolos[Consulta_Tabela(t.lexema, -1)].tipo;
+        
+        escrevePilha("LOAD %d, %d\n", tabela_simbolos[posicao].escopo, tabela_simbolos[posicao].endereco);
         t = analex();
 
         while((t.cat == SN) && (t.codigo == ABRE_COL)){
@@ -639,11 +745,13 @@ void Func_Fator(){
             t.processado = true;
             t = analex(); 
         }
+
+        if(tabela_simbolos[posicao].array != SIMPLES) escrevePilha("ADD \nLDSTK 1\n");
     } else if (t.cat == CT_I || t.cat == CT_C || t.cat == CT_R){
         t.processado = true;
-        
+        escreveConst(t);
+
         tipoVerificado = t.cat; // atualiza para o teste de tipo
-        //printf("TIPOVERIFICADO - %d\n", tipoVerificado);
 
         t = analex();
     } else if (t.cat == SN && t.codigo == ABRE_PAR){
@@ -657,6 +765,9 @@ void Func_Fator(){
         t.processado = true;
         t = analex();
         Func_Fator();
+        strcpy(labelInicio, criarLabel());
+        strcpy(labelFim, criarLabel());
+        escrevePilha("GOTRUE %s\nPUSH 1\nLABEL %s\nPUSH 0\nLABEL%s\n", labelInicio,labelFim,labelInicio,labelFim);
     } else {
         error("Estrutura do FATOR incorreta");
     }

@@ -79,7 +79,7 @@ typedef struct {
     EhConst eh_const; 
     ValorConst valor_const;
     int endereco; 
-    int rotulo;
+    char rotulo[TAM_MAX_LEXEMA];
 } SIMBOLO;
 
 // Variaveis Globais

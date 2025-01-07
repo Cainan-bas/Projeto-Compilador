@@ -12,6 +12,7 @@
 extern TOKEN t;
 extern FILE *fd;
 extern int contLinha;
+extern int endeDeclVar;
 
 /* Assinaturas das funcoes */
 
